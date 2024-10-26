@@ -13,5 +13,5 @@ func WebRoutes(app *fiber.App, cfg *config.Config, redis *cache.Storage) {
 	repoHome := repository.NewHomeRepository(redis)
 	ctrlHome := controller.NewHomeController(repoHome, cfg.App.Timeout*time.Second)
 
-	app.Get("/redis", ctrlHome.Index)
+	app.Get("/", ctrlHome.Index)
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{ include "layouts/header" }}
+
+<body>
+<div class="main-app color-main">
+    <!-- Loader -->
+    <div class="loader-wrapper">
+        <img alt="loading" class="spinner" data-cfsrc="assets/frontend/img/spinner.gif}" style="display: none; visibility: hidden;" />
+        <noscript><img src="assets/frontend/img/spinner.gif}" alt="loading" class="spinner" /></noscript>
+        <span>Please wait</span>
+    </div>
+    <script>
+        document.onreadystatechange = () => {
+            if (document.readyState !== "complete") {
+                document.querySelector(".loader-wrapper").style.visibility = "visible";
+            } else {
+                document.querySelector(".loader-wrapper").style.visibility = "hidden";
+                runAnimationOrnamentCover();
+                fontFix();
+            }
+        };
+    </script>
+
+    <!-- progress -->
+    <div class="progress"></div>
+
+    <div class="position-fixed d-flex m-4 p-0" style="bottom: 0; right: 0px; z-index: 20;">
+        <button id="musicControl" class="btn btn-pink m-auto c-pointer d-flex flex-column btn-control">
+            <i id="playPause" class="icofont icofont-ui-pause text-white mx-auto my-auto"></i>
+        </button>
+    </div>
+
+
+    {{ include "layouts/footer" }}
+</div>
+
+<div id="google_translate_element"></div>
+
+<audio id="audio_file" class="d-none">
+    <source src="assets/frontend/sound.mp3" type="audio/mpeg" /> Your browser does not support the audio element.
+</audio>
+<svg style="position: absolute;pointer-events: none;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <clipPath id="wishes-polygon" clipPathUnits="objectBoundingBox">
+            <polygon points="0 0, 1 1, 1 0" />
+        </clipPath>
+    </defs>
+</svg>
+</body>
+
+{{ include "layouts/js" }}
+{{ include "layouts/script" }}
+
+</html>
