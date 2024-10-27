@@ -13,11 +13,10 @@ type Storage struct {
 
 func NewRedis(cfg *config.Config) (*Storage, error) {
 	client, err := rueidis.NewClient(rueidis.ClientOption{
-		InitAddress:  []string{fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port)},
-		Username:     cfg.Redis.Username,
-		Password:     cfg.Redis.Password,
-		SelectDB:     cfg.Redis.SelectDB,
-		DisableCache: true,
+		InitAddress: []string{fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port)},
+		Username:    cfg.Redis.Username,
+		Password:    cfg.Redis.Password,
+		SelectDB:    cfg.Redis.SelectDB,
 	})
 
 	if err != nil {

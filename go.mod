@@ -4,8 +4,10 @@ go 1.23
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/gofiber/template/jet/v2 v2.1.10
 	github.com/redis/rueidis v1.0.48
 	github.com/spf13/viper v1.19.0
+	github.com/tidwall/gjson v1.18.0
 )
 
 require (
@@ -14,7 +16,6 @@ require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
-	github.com/gofiber/template/jet/v2 v2.1.10 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -33,6 +34,8 @@ require (
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
