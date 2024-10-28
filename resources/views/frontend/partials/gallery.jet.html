@@ -1,0 +1,27 @@
+{{ if galleries != nil }}
+<!-- Start Gallery Section -->
+<section class="gallery-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class=" col-11 col-md-12">
+                <div class="gallery-default">
+                    <div id="gallery-default" class="splide mb-1">
+                        <div class="splide__track overflow-visible">
+                            <ul class="splide__list" id="zoom-gallery-default">
+                                {{ range galleries }}
+                                <li class="splide__slide position-relative">
+                                    <a href="{{ config_app.ImageURL }}{{ .image }}">
+                                        <img data-src="{{ config_app.ImageURL }}{{ .image }}" alt="{{ .image_caption }}" class="img-gallery lazyload" />
+                                    </a>
+                                </li>
+                                {{ end }}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Gallery Section -->
+{{ end }}

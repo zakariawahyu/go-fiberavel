@@ -15,6 +15,12 @@ type App struct {
 	// This value determines the "environment" your application is currently running in.
 	Environment string
 
+	// Application URL
+	URL string
+
+	// Application Image URL
+	ImageURL string
+
 	// Application Timeout
 	// This value to send timeout in context, time.Second
 	Timeout time.Duration

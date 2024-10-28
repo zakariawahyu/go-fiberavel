@@ -5,24 +5,25 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tidwall/gjson"
 	"github.com/zakariawahyu/go-fiberavel/app/repository"
+	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
 	"time"
 )
 
 type HomeController struct {
-	homeRepo       repository.HomeRepository
-	contextTimeout time.Duration
+	homeRepo repository.HomeRepository
+	cfgApp   config.App
 }
 
-func NewHomeController(homeRepo repository.HomeRepository, contextTimeout time.Duration) *HomeController {
+func NewHomeController(homeRepo repository.HomeRepository, cfgApp config.App) *HomeController {
 	return &HomeController{
-		homeRepo:       homeRepo,
-		contextTimeout: contextTimeout,
+		homeRepo: homeRepo,
+		cfgApp:   cfgApp,
 	}
 }
 
 func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), ctrl.contextTimeout)
+	c, cancel := context.WithTimeout(ctx.Context(), ctrl.cfgApp.Timeout*time.Second)
 	defer cancel()
 
 	configs, err := ctrl.homeRepo.HGetAll(c, constants.KeyConfigs)
@@ -55,7 +56,7 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.JSON(fiber.Map{
+	return ctx.Render("frontend/home", fiber.Map{
 		"meta":          gjson.Parse(configs["meta"]).Value(),
 		"cover":         gjson.Parse(configs["cover"]).Value(),
 		"event":         gjson.Parse(configs["event"]).Value(),
@@ -70,5 +71,6 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		"galleries":     gjson.Parse(resGalleries).Value(),
 		"gifts":         gjson.Parse(resGifts).Value(),
 		"guest":         gjson.Parse(resGuest).Value(),
+		"config_app":    ctrl.cfgApp,
 	})
 }

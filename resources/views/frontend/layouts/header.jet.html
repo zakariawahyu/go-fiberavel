@@ -4,6 +4,45 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    {{ if meta != nil }}
+    <title>{{ meta["title"] }}</title>
+    <link rel="icon" href='{{ meta["custom_data"]["icon"] }}'/>
+
+    <meta name="keywords" content='{{ meta["custom_data"]["keywords"] }}' />
+    <meta name="title" content='{{ meta["title"] }}' />
+    <meta name="description" content='{{ meta["description"] }}' />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="@zakariayunanda" />
+    <meta property="og:url" content='{{ config_app.URL }}' />
+    <meta property="og:title" content='{{ meta["title"] }}' />
+    <meta property="og:description" content='{{ meta["description"] }}' />
+    <meta property="og:image" content='{{ meta["image"] }}'/>
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="650" />
+    <meta property="og:image:height" content="366" />
+    <meta property="og:image:alt" content='{{ meta["title"] }}' />
+
+    <meta property="ia:markup_url" content='{{ config_app.URL }}' />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@zakariayunanda" />
+    <meta name="twitter:title" content='{{ meta["title"] }}' />
+    <meta name="twitter:description" content='{{ meta["description"] }}' />
+    <meta name="twitter:image:src" content='{{ meta["image"] }}'/>
+
+    <meta itemprop="title" content='{{ meta["title"] }}' />
+    <meta itemprop="name" content='{{ meta["title"] }}' />
+    <meta itemprop="description" content='{{ meta["description"] }}' />
+    <meta itemprop="image"content='{{ meta["image"] }}'/>
+
+    <meta name="robots" content="index, follow">
+    <meta name="author" content='{{ meta["custom_data"]["author"] }}'>
+    <meta name="publisher" content='{{ meta["custom_data"]["author"] }}'>
+    <meta name="thumbnailUrl" content='{{ meta["image"] }}' itemprop="thumbnailUrl"/>
+    {{ end }}
+
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com/" />
 

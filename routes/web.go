@@ -6,12 +6,11 @@ import (
 	"github.com/zakariawahyu/go-fiberavel/app/repository"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
-	"time"
 )
 
 func WebRoutes(app *fiber.App, cfg *config.Config, redis *cache.Storage) {
 	repoHome := repository.NewHomeRepository(redis)
-	ctrlHome := controller.NewHomeController(repoHome, cfg.App.Timeout*time.Second)
+	ctrlHome := controller.NewHomeController(repoHome, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
 }
