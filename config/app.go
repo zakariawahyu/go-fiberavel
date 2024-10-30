@@ -1,25 +1,41 @@
 package config
 
+import (
+	"github.com/spf13/viper"
+	"time"
+)
+
 type App struct {
 	// Application Name
 	// This value is the name of your application
-	Name string `mapstructure:"APP_NAME"`
+	Name string
 
 	// Application Port
 	// This value is the server port for running
-	Port string `mapstructure:"APP_PORT"`
+	Port string
 
 	// Application Environment
 	// This value determines the "environment" your application is currently running in.
-	Environment string `mapstructure:"APP_ENVIRONMENT"`
+	Environment string
 
 	// Application URL
-	URL string `mapstructure:"APP_URL"`
+	URL string
 
 	// Application Image URL
-	ImageURL string `mapstructure:"APP_IMAGE_URL"`
+	ImageURL string
 
 	// Application Timeout
 	// This value to send timeout in context, time.Second
-	Timeout int `mapstructure:"APP_TIMEOUT"`
+	Timeout time.Duration
+}
+
+func LoadApp() App {
+	return App{
+		Name:        viper.GetString("APP_NAME"),
+		Port:        viper.GetString("APP_PORT"),
+		Environment: viper.GetString("APP_ENVIRONMENT"),
+		URL:         viper.GetString("APP_URL"),
+		ImageURL:    viper.GetString("APP_IMAGE_URL"),
+		Timeout:     viper.GetDuration("APP_TIMEOUT"),
+	}
 }

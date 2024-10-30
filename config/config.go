@@ -3,9 +3,9 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	App
-	Postgres
-	Redis
+	App      App
+	Postgres Postgres
+	Redis    Redis
 }
 
 func LoadConfig() (*Config, error) {
@@ -14,11 +14,9 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
-	cfg := &Config{}
-
-	if err := viper.Unmarshal(cfg); err != nil {
-		return nil, err
-	}
-
-	return cfg, nil
+	return &Config{
+		App:      LoadApp(),
+		Postgres: LoadPostgres(),
+		Redis:    LoadRedis(),
+	}, nil
 }

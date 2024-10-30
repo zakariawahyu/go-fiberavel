@@ -1,9 +1,21 @@
 package config
 
+import "github.com/spf13/viper"
+
 type Redis struct {
-	Host     string `mapstructure:"REDIS_HOST"`
-	Port     string `mapstructure:"REDIS_PORT"`
-	Username string `mapstructure:"REDIS_USERNAME"`
-	Password string `mapstructure:"REDIS_PASSWORD"`
-	SelectDB int    `mapstructure:"REDIS_SELECT_DB"`
+	Host     string
+	Port     string
+	Username string
+	Password string
+	SelectDB int
+}
+
+func LoadRedis() Redis {
+	return Redis{
+		Host:     viper.GetString("REDIS_HOST"),
+		Port:     viper.GetString("REDIS_PORT"),
+		Username: viper.GetString("REDIS_USERNAME"),
+		Password: viper.GetString("REDIS_PASSWORD"),
+		SelectDB: viper.GetInt("REDIS_SELECT_DB"),
+	}
 }
