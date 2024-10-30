@@ -33,7 +33,6 @@ services:
     image: postgres:17-alpine
     container_name: postgres-app
     restart: unless-stopped
-    tty: true
     ports:
       - "5432:5432"
     environment:
@@ -41,7 +40,9 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
-      - ./docker/postgres_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - go_networks
 
   redis:
     image: redis:7.4.1-alpine
@@ -51,14 +52,17 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./docker/redis_data:/data
+      - redis_data:/data
     environment:
-      - REDIS_USERNAME=${REDIS_USERNAME}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--user", "${REDIS_USERNAME} on +@all ~* &*"]
+    command: [ "redis-server", "--requirepass", "${REDIS_PASSWORD}"]
     networks:
       - go_networks
 
 networks:
   go_networks:
     driver: bridge
+    
+volumes:
+  pg_data:
+  redis_data:
