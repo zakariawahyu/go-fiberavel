@@ -1,18 +1,9 @@
 package config
 
 type Redis struct {
-	Host string
-	Port string
-
-	// Server username
-	// Optional. Default is ""
-	Username string
-
-	// Server password
-	// Optional. Default is ""
-	Password string
-
-	// SelectDB to be selected after connecting to the server.
-	// Optional. Default is 0
-	SelectDB int
+	Host     string `mapstructure:"REDIS_HOST"`
+	Port     string `mapstructure:"REDIS_PORT"`
+	Username string `mapstructure:"REDIS_USERNAME"`
+	Password string `mapstructure:"REDIS_PASSWORD"`
+	SelectDB int    `mapstructure:"REDIS_SELECT_DB"`
 }
