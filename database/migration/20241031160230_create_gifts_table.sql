@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE public.gifts (
+CREATE TABLE gifts (
     id bigserial NOT NULL,
     bank varchar(255) NOT NULL,
     account_name varchar(255) NOT NULL,

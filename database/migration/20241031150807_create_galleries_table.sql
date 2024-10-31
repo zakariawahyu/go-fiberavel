@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE public.galleries (
+CREATE TABLE galleries (
     id bigserial NOT NULL,
     image varchar(255) NOT NULL,
     image_caption varchar(255) NOT NULL,

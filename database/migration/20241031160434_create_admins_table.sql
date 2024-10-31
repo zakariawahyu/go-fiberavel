@@ -9,4 +9,4 @@ CREATE TABLE admins (
 );
 
 -- migrate:down
-DRROP TABLE IF EXISTS admins
+DROP TABLE IF EXISTS admins

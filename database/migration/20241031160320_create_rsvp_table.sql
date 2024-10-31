@@ -8,7 +8,7 @@ CREATE TABLE rsvp (
     created_at timestamp(0) NULL,
     updated_at timestamp(0) NULL,
     CONSTRAINT rsvp_pkey PRIMARY KEY (id)
-)
+);
 
 -- migrate:down
 DROP TABLE IF EXISTS rsvp

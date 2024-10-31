@@ -7,7 +7,7 @@ CREATE TABLE wishes (
    updated_at timestamp(0) NULL,
    deleted_at timestamp(0) NULL,
    CONSTRAINT wishes_pkey PRIMARY KEY (id)
-)
+);
 
 -- migrate:down
 DROP TABLE IF EXISTS wishes

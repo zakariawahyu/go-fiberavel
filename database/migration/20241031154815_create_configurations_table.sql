@@ -11,7 +11,7 @@ CREATE TABLE configurations (
     created_at timestamp(0) NULL,
     updated_at timestamp(0) NULL,
     CONSTRAINT configurations_pkey PRIMARY KEY (id)
-)
+);
 
 -- migrate:down
 DROP TABLE IF EXISTS configurations
