@@ -26,6 +26,7 @@ services:
     volumes:
       - ./docker/nginx:/etc/nginx/conf.d/
       - ./docker/nginx/logs:/var/log/nginx/
+      - ./docker/nginx/tls:/etc/letsencrypt/
     networks:
       - go_networks
 
