@@ -23,6 +23,7 @@ services:
     tty: true
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d/
       - ./docker/nginx/logs:/var/log/nginx/
