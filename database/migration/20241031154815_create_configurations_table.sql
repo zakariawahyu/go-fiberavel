@@ -8,8 +8,8 @@ CREATE TABLE configurations (
     image_caption varchar(255) NULL,
     custom_data json NULL,
     is_active bool NOT NULL,
-    created_at timestamp(0) NULL,
-    updated_at timestamp(0) NULL,
+    created_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT configurations_pkey PRIMARY KEY (id)
 );
 

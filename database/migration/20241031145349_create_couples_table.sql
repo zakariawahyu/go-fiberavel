@@ -9,8 +9,8 @@ CREATE TABLE couples (
     image varchar(255) NOT NULL,
     image_caption varchar(255) NOT NULL,
     instagram_url varchar(255) NOT NULL,
-    created_at timestamp(0) NULL,
-    updated_at timestamp(0) NULL,
+    created_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) NULL,
     CONSTRAINT couples_couple_type_check CHECK (((couple_type)::text = ANY ((ARRAY['cpp'::character varying, 'cpw'::character varying])::text[]))),
     CONSTRAINT couples_pkey PRIMARY KEY (id)

@@ -6,8 +6,8 @@ CREATE TABLE venue_details (
       address varchar(255) NOT NULL,
       date timestamp(0) NOT NULL,
       map text NOT NULL,
-      created_at timestamp(0) NULL,
-      updated_at timestamp(0) NULL,
+      created_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
       deleted_at timestamp(0) NULL,
       CONSTRAINT venue_details_pkey PRIMARY KEY (id)
 );

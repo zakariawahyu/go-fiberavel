@@ -21,8 +21,8 @@ CREATE TABLE public.admins (
     id bigint NOT NULL,
     username character varying(255) NOT NULL,
     password character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -58,8 +58,8 @@ CREATE TABLE public.configurations (
     image_caption character varying(255),
     custom_data json,
     is_active boolean NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -96,8 +96,8 @@ CREATE TABLE public.couples (
     image character varying(255) NOT NULL,
     image_caption character varying(255) NOT NULL,
     instagram_url character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone,
     CONSTRAINT couples_couple_type_check CHECK (((couple_type)::text = ANY (ARRAY[('cpp'::character varying)::text, ('cpw'::character varying)::text])))
 );
@@ -130,8 +130,8 @@ CREATE TABLE public.galleries (
     id bigint NOT NULL,
     image character varying(255) NOT NULL,
     image_caption character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone
 );
 
@@ -164,8 +164,8 @@ CREATE TABLE public.gifts (
     bank character varying(255) NOT NULL,
     account_name character varying(255) NOT NULL,
     account_number character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone
 );
 
@@ -198,8 +198,8 @@ CREATE TABLE public.guest_lists (
     name character varying(255) NOT NULL,
     slug character varying(255) NOT NULL,
     is_gift boolean NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone
 );
 
@@ -233,8 +233,8 @@ CREATE TABLE public.rsvp (
     phone_number character varying(255) NOT NULL,
     guest_amount character varying(255) NOT NULL,
     is_attend boolean NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -277,8 +277,8 @@ CREATE TABLE public.venue_details (
     address character varying(255) NOT NULL,
     date timestamp(0) without time zone NOT NULL,
     map text NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone
 );
 
@@ -310,8 +310,8 @@ CREATE TABLE public.wishes (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     wish_description text NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp(0) without time zone
 );
 
