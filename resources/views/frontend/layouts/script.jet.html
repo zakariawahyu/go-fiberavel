@@ -175,10 +175,13 @@
             $("#guestbook_submit_btn").html("Sending..");
 
             $.ajax({
-                data: $("#guestbook_form").serialize(),
-                url: "/b",
+                url: "/api/wish",
                 type: "POST",
-                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify( {
+                    name: $("#name").val(),
+                    wish_description: $("#wish_description").val()
+                }),
                 success: function (data) {
                     $(".guestbook_form_wrapper").html("<p class='text-center'>Terima Kasih, Anda telah memberikan komentar</p>");
                     $("#guestbook_submit_btn").prop("disabled", false);

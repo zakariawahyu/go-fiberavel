@@ -14,7 +14,7 @@ func LoadPostgres() Postgres {
 	return Postgres{
 		Host:     viper.GetString("DB_HOST"),
 		Port:     viper.GetString("DB_PORT"),
-		Username: viper.GetString("DB_USER"),
+		Username: viper.GetString("DB_USERNAME"),
 		Password: viper.GetString("DB_PASSWORD"),
 		Database: viper.GetString("DB_DATABASE"),
 	}
