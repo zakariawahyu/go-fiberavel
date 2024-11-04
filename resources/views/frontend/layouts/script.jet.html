@@ -130,10 +130,15 @@
             $("#tombolsimpan").prop("disabled", true);
             $("#tombolsimpan").html("Sending..");
             $.ajax({
-                data: $("#tambahdata").serialize(),
-                url: "/ad",
+                url: "/api/rsvp",
                 type: "POST",
-                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify( {
+                    name: $("#name_rsvp").val(),
+                    phone_number: $("#phone_number").val(),
+                    guest_amount: $("#guest_amount").val(),
+                    is_attend: parseInt($("#is_attend").val())
+                }),
                 success: function (data) {
                     $("#tombolsimpan").html("Simpan");
 
@@ -152,7 +157,7 @@
                     $("#tombolsimpan").html("Simpan");
                     iziToast.error({
                         title: " Gagal Terkirim",
-                        message: "Mohon coba lagi"+ (data.responseJSON.message ?? ""),
+                        message: "Mohon coba lagi"+ (data.responseJSON.errors ?? ""),
                         position: "bottomRight",
                     });
                 },
@@ -202,7 +207,7 @@
 
                     iziToast.error({
                         title: "Gagal",
-                        message: "Pesan anda gagal ditambahkan. Silahkan mencoba kembali beberapa saat! " + (data.responseJSON.message ?? ""),
+                        message: "Pesan anda gagal ditambahkan. Silahkan mencoba kembali beberapa saat! " + (data.responseJSON.errors ?? ""),
                         position: "bottomRight",
                     });
                 },

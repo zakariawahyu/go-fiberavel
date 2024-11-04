@@ -13,7 +13,11 @@ func ApiRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	repoWishes := repository.NewWishesRepository(db, redis)
 	ctrlWishes := controller.NewWishController(repoWishes, cfg.App)
 
+	repoRsvp := repository.NewRsvpRepository(db)
+	ctrlRsvp := controller.NewRsvpController(repoRsvp, cfg.App)
+
 	api := app.Group("/api")
 	api.Post("/wish", ctrlWishes.CreateWish)
 	api.Get("/wish", ctrlWishes.GetAllWishes)
+	api.Post("/rsvp", ctrlRsvp.CreateRsvp)
 }

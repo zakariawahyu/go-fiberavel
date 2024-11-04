@@ -36,9 +36,9 @@
                                 <div class="position-relative color__button__trans" id="cardRSVP">
                                     <div id="cardRSVP">
                                         <form action="#" method="post" data-anim="fade" id="tambahdata">
-                                            <input required type="text" name="name" class="form-control mb-3" placeholder="Nama" value="" data-anim="zoom-in-up" data-anim-delay="500" />
-                                            <input required type="text" name="phone_number" class="form-control mb-3" placeholder="Nomor Handphone" value="" data-anim="zoom-in-up" data-anim-delay="500" />
-                                            <select name="guest_amount" class="form-control mb-3" required data-anim="zoom-in-up" data-anim-delay="500">
+                                            <input required type="text" name="name_rsvp" id="name_rsvp" class="form-control mb-3" placeholder="Nama" value="" data-anim="zoom-in-up" data-anim-delay="500" />
+                                            <input required type="text" name="phone_number" id="phone_number" class="form-control mb-3" placeholder="Nomor Handphone" value="" data-anim="zoom-in-up" data-anim-delay="500" />
+                                            <select required name="guest_amount" id="guest_amount" class="form-control mb-3" data-anim="zoom-in-up" data-anim-delay="500">
                                                 <option hidden selected disabled>
                                                     Jumlah Tamu
                                                 </option>
@@ -48,7 +48,7 @@
                                                 <option value="4">4</option>
                                                 <option value="5">5</option>
                                             </select>
-                                            <select required name="is_attend" class="form-select mb-3" data-anim="zoom-in-up" data-anim-delay="500">
+                                            <select required name="is_attend" id="is_attend" class="form-select mb-3" data-anim="zoom-in-up" data-anim-delay="500">
                                                 <option disabled selected>Konfirmasi Kehadiran</option>
                                                 <option value="1">Hadir</option>
                                                 <option value="0">Tidak Hadir</option>

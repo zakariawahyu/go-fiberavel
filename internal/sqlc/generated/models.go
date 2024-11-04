@@ -78,7 +78,7 @@ type Rsvp struct {
 	Name        string           `json:"name"`
 	PhoneNumber string           `json:"phone_number"`
 	GuestAmount string           `json:"guest_amount"`
-	IsAttend    bool             `json:"is_attend"`
+	IsAttend    int32            `json:"is_attend"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }

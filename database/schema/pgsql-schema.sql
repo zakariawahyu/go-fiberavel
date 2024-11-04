@@ -232,9 +232,10 @@ CREATE TABLE public.rsvp (
     name character varying(255) NOT NULL,
     phone_number character varying(255) NOT NULL,
     guest_amount character varying(255) NOT NULL,
-    is_attend boolean NOT NULL,
+    is_attend integer DEFAULT 0 NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
+    updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT rsvp_is_attend_check CHECK ((is_attend = ANY (ARRAY[0, 1])))
 );
 
 
