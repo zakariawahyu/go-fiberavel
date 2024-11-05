@@ -4,11 +4,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/template/jet/v2"
+	"github.com/zakariawahyu/go-fiberavel/app/middleware"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/db"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
-	"github.com/zakariawahyu/go-fiberavel/internal/utils"
 	"github.com/zakariawahyu/go-fiberavel/routes"
 )
 
@@ -17,7 +17,7 @@ func NewApplication() *fiber.App {
 
 	app := fiber.New(fiber.Config{
 		Views:        engine,
-		ErrorHandler: utils.ErrorHandler,
+		ErrorHandler: middleware.ErrorHandler,
 	})
 
 	app.Static("/assets", "./public/assets")
