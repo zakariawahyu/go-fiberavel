@@ -45,8 +45,15 @@ func NewApplication() *fiber.App {
 	// Register Static File
 	app.Static("/assets", "./public/assets")
 
+	// Initialize Redis Store
+	cfg.Redis.SelectDB = 1
+	redisStore, err := cache.NewRedis(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Initialize Session Store and Register CSRF Middleware
-	middleware.InitSessionsStore(redis)
+	middleware.InitSessionsStore(redisStore)
 	app.Use(middleware.CSRFMiddleware(middleware.Store))
 
 	// Register Routes
