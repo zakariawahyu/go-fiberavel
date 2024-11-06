@@ -132,7 +132,10 @@
             $.ajax({
                 url: "/api/rsvp",
                 type: "POST",
-                contentType: 'application/json',
+                headers: {
+                    "X-Csrf-Token" : "{{ CSRF }}",
+                    "Content-Type": "application/json",
+                },
                 data: JSON.stringify( {
                     name: $("#name_rsvp").val(),
                     phone_number: $("#phone_number").val(),
@@ -182,7 +185,10 @@
             $.ajax({
                 url: "/api/wish",
                 type: "POST",
-                contentType: 'application/json',
+                headers: {
+                    "X-Csrf-Token" : "{{ CSRF }}",
+                    "Content-Type": "application/json",
+                },
                 data: JSON.stringify( {
                     name: $("#name").val(),
                     wish_description: $("#wish_description").val()

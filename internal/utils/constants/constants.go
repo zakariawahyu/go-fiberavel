@@ -8,4 +8,6 @@ const (
 	KeyGuestList    = "guest_lists"
 	KeyWishes       = "wishes"
 	KeyGift         = "gifts"
+
+	CSRFContextKey = "__CSRF__"
 )
