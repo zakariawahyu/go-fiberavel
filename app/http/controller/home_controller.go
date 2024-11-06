@@ -4,21 +4,21 @@ import (
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"github.com/tidwall/gjson"
-	"github.com/zakariawahyu/go-fiberavel/app/repository"
 	"github.com/zakariawahyu/go-fiberavel/config"
+	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
 	"time"
 )
 
 type HomeController struct {
-	homeRepo repository.HomeRepository
-	cfgApp   config.App
+	redis  cache.Rueidis
+	cfgApp config.App
 }
 
-func NewHomeController(homeRepo repository.HomeRepository, cfgApp config.App) *HomeController {
+func NewHomeController(redis cache.Rueidis, cfgApp config.App) *HomeController {
 	return &HomeController{
-		homeRepo: homeRepo,
-		cfgApp:   cfgApp,
+		redis:  redis,
+		cfgApp: cfgApp,
 	}
 }
 
@@ -26,32 +26,32 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), ctrl.cfgApp.Timeout*time.Second)
 	defer cancel()
 
-	configs, err := ctrl.homeRepo.HGetAll(c, constants.KeyConfigs)
+	configs, err := ctrl.redis.HGetAll(c, constants.KeyConfigs)
 	if err != nil {
 		return err
 	}
 
-	resCouples, err := ctrl.homeRepo.Get(c, constants.KeyCouples)
+	resCouples, err := ctrl.redis.Get(constants.KeyCouples)
 	if err != nil {
 		return err
 	}
 
-	resVenueDetails, err := ctrl.homeRepo.Get(c, constants.KeyVenueDetails)
+	resVenueDetails, err := ctrl.redis.Get(constants.KeyVenueDetails)
 	if err != nil {
 		return err
 	}
 
-	resGalleries, err := ctrl.homeRepo.Get(c, constants.KeyGalleries)
+	resGalleries, err := ctrl.redis.Get(constants.KeyGalleries)
 	if err != nil {
 		return err
 	}
 
-	resGifts, err := ctrl.homeRepo.Get(c, constants.KeyGift)
+	resGifts, err := ctrl.redis.Get(constants.KeyGift)
 	if err != nil {
 		return err
 	}
 
-	resGuest, err := ctrl.homeRepo.HGet(c, constants.KeyGuestList, "akbar-gustama")
+	resGuest, err := ctrl.redis.HGet(constants.KeyGuestList, "akbar-gustama")
 	if err != nil {
 		return err
 	}
@@ -66,10 +66,10 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		"gift":          gjson.Parse(configs["gift"]).Value(),
 		"wishes":        gjson.Parse(configs["wishes"]).Value(),
 		"thanks":        gjson.Parse(configs["thanks"]).Value(),
-		"couples":       gjson.Parse(resCouples).Value(),
-		"venue_details": gjson.Parse(resVenueDetails).Value(),
-		"galleries":     gjson.Parse(resGalleries).Value(),
-		"gifts":         gjson.Parse(resGifts).Value(),
+		"couples":       gjson.Parse(string(resCouples)).Value(),
+		"venue_details": gjson.Parse(string(resVenueDetails)).Value(),
+		"galleries":     gjson.Parse(string(resGalleries)).Value(),
+		"gifts":         gjson.Parse(string(resGifts)).Value(),
 		"guest":         gjson.Parse(resGuest).Value(),
 		"config_app":    ctrl.cfgApp,
 	})

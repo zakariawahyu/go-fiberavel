@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	"github.com/redis/rueidis"
 	"github.com/tidwall/gjson"
 	"github.com/zakariawahyu/go-fiberavel/app/repository"
 	"github.com/zakariawahyu/go-fiberavel/config"
+	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
 	"time"
@@ -15,12 +15,14 @@ import (
 
 type WishController struct {
 	wishRepo repository.WishesRepository
+	redis    cache.Rueidis
 	cfgApp   config.App
 }
 
-func NewWishController(wishRepo repository.WishesRepository, cfgApp config.App) *WishController {
+func NewWishController(wishRepo repository.WishesRepository, redis cache.Rueidis, cfgApp config.App) *WishController {
 	return &WishController{
 		wishRepo: wishRepo,
+		redis:    redis,
 		cfgApp:   cfgApp,
 	}
 }
@@ -50,7 +52,7 @@ func (ctrl *WishController) CreateWish(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	err = ctrl.wishRepo.SetRedis(c, constants.KeyWishes, rueidis.BinaryString(wishesBytes))
+	err = ctrl.redis.Set(constants.KeyWishes, wishesBytes, 1*time.Second)
 	if err != nil {
 		return err
 	}
@@ -59,15 +61,12 @@ func (ctrl *WishController) CreateWish(ctx *fiber.Ctx) error {
 }
 
 func (ctrl *WishController) GetAllWishes(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), ctrl.cfgApp.Timeout*time.Second)
-	defer cancel()
-
-	result, err := ctrl.wishRepo.GetRedis(c, constants.KeyWishes)
+	result, err := ctrl.redis.Get(constants.KeyWishes)
 	if err != nil {
 		return err
 	}
 
 	return ctx.Render("frontend/partials/wishes-data", fiber.Map{
-		"wishes": gjson.Parse(result).Value(),
+		"wishes": gjson.Parse(string(result)).Value(),
 	})
 }

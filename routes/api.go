@@ -10,8 +10,8 @@ import (
 )
 
 func ApiRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage) {
-	repoWishes := repository.NewWishesRepository(db, redis)
-	ctrlWishes := controller.NewWishController(repoWishes, cfg.App)
+	repoWishes := repository.NewWishesRepository(db)
+	ctrlWishes := controller.NewWishController(repoWishes, redis, cfg.App)
 
 	repoRsvp := repository.NewRsvpRepository(db)
 	ctrlRsvp := controller.NewRsvpController(repoRsvp, cfg.App)
