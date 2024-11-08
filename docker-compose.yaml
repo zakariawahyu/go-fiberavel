@@ -17,7 +17,7 @@ services:
       - go_networks
 
   nginx:
-    image: nginx:1.27.2-alpine
+    image: fholzer/nginx-brotli:v1.26.2
     container_name: nginx-app
     restart: unless-stopped
     tty: true
