@@ -52,6 +52,9 @@ func NewApplication() *fiber.App {
 		log.Fatal(err)
 	}
 
+	// Initialize Cache Middleware
+	app.Use(middleware.CacheMiddleware(redisStore))
+
 	// Initialize Session Store and Register CSRF Middleware
 	middleware.InitSessionsStore(redisStore)
 	app.Use(middleware.CSRFMiddleware(middleware.Store))

@@ -52,6 +52,10 @@ func (ctrl *WishController) CreateWish(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if err = ctrl.redis.Delete(ctx.Path()); err != nil {
+		return err
+	}
+
 	err = ctrl.redis.Set(constants.KeyWishes, wishesBytes, 1*time.Second)
 	if err != nil {
 		return err
