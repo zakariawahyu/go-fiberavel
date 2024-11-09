@@ -56,6 +56,9 @@ func NewApplication() *fiber.App {
 	middleware.InitSessionsStore(redisStore)
 	app.Use(middleware.CSRFMiddleware(middleware.Store))
 
+	// Initialize Cache Middleware
+	app.Use(middleware.CacheMiddleware(redisStore))
+
 	// Register Routes
 	routes.WebRoutes(app, cfg, redis)
 	routes.ApiRoutes(app, cfg, queries, redis)
