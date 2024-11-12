@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"encoding/json"
 	"errors"
+	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofiber/fiber/v2"
+	"github.com/tidwall/gjson"
 )
 
 type ErrorResponse struct {
@@ -27,13 +30,21 @@ var ErrorHandler = func(ctx *fiber.Ctx, err error) error {
 		return ctx.Status(code).JSON(ErrorResponse{
 			Success: false,
 			Code:    code,
-			Errors:  err.Error(),
+			Errors:  getError(err),
 		})
 	}
 
 	return nil
 }
 
+func getError(err error) any {
+	if err, ok := err.(validation.Errors); ok {
+		res, _ := json.Marshal(err)
+		return gjson.Parse(string(res)).Value()
+	}
+
+	return err.Error()
+}
 func getStatusCode(err error) int {
 	if err == nil {
 		return fiber.StatusOK

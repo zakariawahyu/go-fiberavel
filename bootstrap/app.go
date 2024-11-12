@@ -60,7 +60,7 @@ func NewApplication() *fiber.App {
 	app.Use(middleware.CSRFMiddleware(middleware.Store))
 
 	// Register Routes
-	routes.WebRoutes(app, cfg, redis)
+	routes.WebRoutes(app, cfg, queries, redis)
 	routes.ApiRoutes(app, cfg, queries, redis)
 
 	// Start Fiber App
