@@ -7,7 +7,6 @@ import (
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
-	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
 	"time"
 )
 
@@ -24,11 +23,7 @@ func NewAuthController(authRepo repository.AuthRepository, cfgApp config.App) *A
 }
 
 func (c *AuthController) Index(ctx *fiber.Ctx) error {
-	token := ctx.Locals(constants.CSRFContextKey).(string)
-
-	return ctx.Render("backend/pages/auth/index", fiber.Map{
-		"CSRF": token,
-	})
+	return ctx.Render("backend/pages/auth/index", fiber.Map{})
 }
 
 func (c *AuthController) Login(ctx *fiber.Ctx) error {

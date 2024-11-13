@@ -133,7 +133,6 @@
                 url: "/api/rsvp",
                 type: "POST",
                 headers: {
-                    "X-Csrf-Token" : "{{ CSRF }}",
                     "Content-Type": "application/json",
                 },
                 data: JSON.stringify( {
@@ -186,7 +185,6 @@
                 url: "/api/wish",
                 type: "POST",
                 headers: {
-                    "X-Csrf-Token" : "{{ CSRF }}",
                     "Content-Type": "application/json",
                 },
                 data: JSON.stringify( {
