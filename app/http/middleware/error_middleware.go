@@ -15,7 +15,9 @@ type ErrorResponse struct {
 }
 
 var (
-	ErrNotFound = errors.New("Your requested item is not found")
+	ErrNotFound         = errors.New("Your requested item is not found")
+	ErrPasswordNotMatch = errors.New("Password not match")
+	ErrLogin            = errors.New("Username not found")
 )
 
 var ErrorHandler = func(ctx *fiber.Ctx, err error) error {
@@ -53,6 +55,10 @@ func getStatusCode(err error) int {
 	switch err {
 	case ErrNotFound:
 		return fiber.StatusNotFound
+	case ErrPasswordNotMatch:
+		return fiber.StatusBadRequest
+	case ErrLogin:
+		return fiber.StatusBadRequest
 	default:
 		return fiber.StatusInternalServerError
 	}
