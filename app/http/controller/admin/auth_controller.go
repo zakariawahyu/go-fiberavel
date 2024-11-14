@@ -15,17 +15,19 @@ import (
 type AuthController struct {
 	authRepo repository.AuthRepository
 	cfgApp   config.App
+	session  *middleware.FlashStore
 }
 
-func NewAuthController(authRepo repository.AuthRepository, cfgApp config.App) *AuthController {
+func NewAuthController(authRepo repository.AuthRepository, cfgApp config.App, session *middleware.FlashStore) *AuthController {
 	return &AuthController{
 		authRepo: authRepo,
 		cfgApp:   cfgApp,
+		session:  session,
 	}
 }
 
 func (c *AuthController) Index(ctx *fiber.Ctx) error {
-	return ctx.Render("backend/pages/auth/index", fiber.Map{})
+	return ctx.Render("backend/pages/auth/index", c.session.GetFlash(ctx))
 }
 
 func (c *AuthController) Login(ctx *fiber.Ctx) error {
@@ -39,16 +41,25 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	}
 
 	if err := request.LoginValidate(auth); err != nil {
-		return err
+		fm := fiber.Map{
+			"errValidate": middleware.GetError(err),
+		}
+		return c.session.SetFlash(ctx, fm).RedirectBack("/")
 	}
 
 	result, err := c.authRepo.Login(context, auth.Username)
 	if err != nil {
-		return err
+		fm := fiber.Map{
+			"errors": err.Error(),
+		}
+		return c.session.SetFlash(ctx, fm).RedirectBack("/")
 	}
 
 	if err := helper.ComparePassword(result.Password, auth.Password); err != nil {
-		return middleware.ErrPasswordNotMatch
+		fm := fiber.Map{
+			"errors": middleware.ErrPasswordNotMatch,
+		}
+		return c.session.SetFlash(ctx, fm).RedirectBack("/")
 	}
 
 	return ctx.JSON(result)

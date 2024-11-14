@@ -36,16 +36,28 @@
                     <h4 class="mb-2">Welcome to Wedding Configuration! 👋</h4>
                     <p class="mb-4">Please sign-in to your account and start the adventurse</p>
                     <form class="mb-3" action="/mimin/login" method="POST" id="formAuthentication">
+                        {{ if isset(errors) }}
+                            <div class="alert alert-danger alert-dismissible" role="alert">
+                                <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">Error</h6>
+                                <p class="mb-0">{{ errors }}</p>
+                            </div>
+                        {{ end }}
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" value="" placeholder="Enter your username" />
+                            <input type="text" class='form-control {{ if isset(errValidate["username"]) }} is-invalid {{ end }}' id="username" name="username" value="" placeholder="Enter your username" />
+                            {{ if isset(errValidate["username"]) }}
+                            <div class="invalid-feedback">{{ errValidate["username"] }}</div>
+                            {{ end }}
                         </div>
                         <div class="mb-3 form-password-toggle">
                             <div class="d-flex justify-content-between">
                                 <label class="form-label">Password</label>
                             </div>
                             <div class="input-group input-group-merge">
-                                <input type="password" id="password" class="form-control" name="password" value="" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                <input type="password" id="password" class='form-control  {{ if isset(errValidate["password"]) }} is-invalid {{ end }}' name="password" value="" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                {{ if isset(errValidate["password"]) }}
+                                <div class="invalid-feedback">{{ errValidate["password"] }}</div>
+                                {{ end }}
                             </div>
                         </div>
                         <div class="mb-3">

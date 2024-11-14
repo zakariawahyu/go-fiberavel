@@ -32,14 +32,14 @@ var ErrorHandler = func(ctx *fiber.Ctx, err error) error {
 		return ctx.Status(code).JSON(ErrorResponse{
 			Success: false,
 			Code:    code,
-			Errors:  getError(err),
+			Errors:  GetError(err),
 		})
 	}
 
 	return nil
 }
 
-func getError(err error) any {
+func GetError(err error) any {
 	if err, ok := err.(validation.Errors); ok {
 		res, _ := json.Marshal(err)
 		return gjson.Parse(string(res)).Value()
