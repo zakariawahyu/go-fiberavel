@@ -17,13 +17,17 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	app.Get("/", ctrlHome.Index)
 
 	// Route Backend
-	mimin := app.Group("/mimin")
-
 	repoAuth := repository.NewAuthRepository(db)
-	ctrlDashboard := admin.NewDashboardController()
 	ctrlAuth := admin.NewAuthController(repoAuth, cfg.App, session)
 
-	mimin.Get("/login", ctrlAuth.Index)
-	mimin.Post("/login", ctrlAuth.Login)
+	app.Get("/auth/mimin", ctrlAuth.Index)
+	app.Post("/auth/mimin", ctrlAuth.Login)
+	app.Get("/auth/unauthorized", ctrlAuth.Unauthorized)
+
+	mimin := app.Group("/mimin", session.Authenticated())
+
+	ctrlDashboard := admin.NewDashboardController()
+
+	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
 }

@@ -2,19 +2,16 @@
 <html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Login</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon"
-          href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/assets/img/favicon/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/assets/img/favicon/favicon.ico"/>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/"/>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
-          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet"/>
 
     <!-- Icons -->
     <link rel="stylesheet" href="/assets/backend/fonts/boxicons.css"/>
@@ -38,7 +35,7 @@
                 <div class="card-body">
                     <h4 class="mb-2">Welcome to Wedding Configuration! 👋</h4>
                     <p class="mb-4">Please sign-in to your account and start the adventurse</p>
-                    <form class="mb-3" action="/mimin/login" method="POST" id="formAuthentication">
+                    <form class="mb-3" action="/auth/mimin" method="POST" id="formAuthentication">
                         {{ if isset(error) }}
                         <div class="alert alert-danger alert-dismissible" role="alert">
                             <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">Error</h6>

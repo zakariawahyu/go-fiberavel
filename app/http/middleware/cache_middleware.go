@@ -13,7 +13,11 @@ func CacheMiddleware(storage fiber.Storage) fiber.Handler {
 		CacheControl: true,
 		Storage:      storage,
 		Next: func(c *fiber.Ctx) bool {
-			return strings.HasPrefix(c.Path(), "/mimin")
+			if strings.HasPrefix(c.Path(), "/auth") || strings.HasPrefix(c.Path(), "/mimin") {
+				return true
+			}
+
+			return false
 		},
 	})
 }

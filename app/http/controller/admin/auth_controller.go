@@ -28,6 +28,15 @@ func NewAuthController(authRepo repository.AuthRepository, cfgApp config.App, se
 }
 
 func (c *AuthController) Index(ctx *fiber.Ctx) error {
+	sess, err := c.session.Store.Get(ctx)
+	if err != nil {
+		return err
+	}
+
+	if sess.Get(middleware.KeyAuthSession) != nil {
+		return ctx.Redirect("/mimin/dashboard")
+	}
+
 	build := flash.NewMessage(c.session.Store).Build()
 
 	return ctx.Render("backend/pages/auth/index", build.GetFlash(ctx))
@@ -59,5 +68,26 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 		return build.SetFlash(ctx).RedirectBack("/")
 	}
 
-	return ctx.JSON(result)
+	if err = c.session.SetAuth(ctx, result.Username); err != nil {
+		return err
+	}
+
+	return ctx.Redirect("/mimin/dashboard")
+}
+
+func (c *AuthController) Logout(ctx *fiber.Ctx) error {
+	sess, err := c.session.Store.Get(ctx)
+	if err != nil {
+		return err
+	}
+
+	if err = sess.Regenerate(); err != nil {
+		return err
+	}
+
+	return ctx.Redirect("/auth/mimin")
+}
+
+func (c *AuthController) Unauthorized(ctx *fiber.Ctx) error {
+	return ctx.Render("backend/pages/auth/unauthorized", nil)
 }
