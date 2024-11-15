@@ -10,7 +10,7 @@ import (
 
 func CSRFMiddleware(store *session.Store) fiber.Handler {
 	return csrf.New(csrf.Config{
-		KeyLookup:         "header:X-Csrf-Token",
+		KeyLookup:         "cookie:csrf_token",
 		CookieName:        "csrf_token",
 		CookieSameSite:    "Lax",
 		CookieHTTPOnly:    true,

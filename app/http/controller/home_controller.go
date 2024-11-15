@@ -56,8 +56,6 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	token := ctx.Locals(constants.CSRFContextKey).(string)
-
 	return ctx.Render("frontend/home", fiber.Map{
 		"meta":          gjson.Parse(configs["meta"]).Value(),
 		"cover":         gjson.Parse(configs["cover"]).Value(),
@@ -74,6 +72,5 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		"gifts":         gjson.Parse(string(resGifts)).Value(),
 		"guest":         gjson.Parse(resGuest).Value(),
 		"config_app":    ctrl.cfgApp,
-		"CSRF":          token,
 	})
 }

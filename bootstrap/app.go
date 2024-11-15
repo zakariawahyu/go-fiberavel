@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
+	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/template/jet/v2"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	"github.com/zakariawahyu/go-fiberavel/config"
@@ -42,6 +43,10 @@ func NewApplication() *fiber.App {
 		ErrorHandler: middleware.ErrorHandler,
 	})
 
+	app.Use(encryptcookie.New(encryptcookie.Config{
+		Key: cfg.App.Key,
+	}))
+
 	// Register Static File
 	app.Static("/assets", "./public/assets")
 
@@ -56,11 +61,11 @@ func NewApplication() *fiber.App {
 	app.Use(middleware.CacheMiddleware(redisStore))
 
 	// Initialize Session Store and Register CSRF Middleware
-	middleware.InitSessionsStore(redisStore)
-	app.Use(middleware.CSRFMiddleware(middleware.Store))
+	sessionStore := middleware.InitSessionsStore(redisStore)
+	app.Use(middleware.CSRFMiddleware(sessionStore.Store))
 
 	// Register Routes
-	routes.WebRoutes(app, cfg, redis)
+	routes.WebRoutes(app, cfg, queries, redis, sessionStore)
 	routes.ApiRoutes(app, cfg, queries, redis)
 
 	// Start Fiber App
