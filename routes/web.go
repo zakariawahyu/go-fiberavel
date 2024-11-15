@@ -11,7 +11,7 @@ import (
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 )
 
-func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.FlashStore) {
+func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session) {
 	ctrlHome := controller.NewHomeController(redis, cfg.App)
 
 	app.Get("/", ctrlHome.Index)

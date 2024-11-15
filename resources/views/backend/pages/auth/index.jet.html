@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Login</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon"
+          href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/assets/img/favicon/favicon.ico"/>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com/" />
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com/"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
+          rel="stylesheet"/>
 
     <!-- Icons -->
-    <link rel="stylesheet" href="/assets/backend/fonts/boxicons.css" />
+    <link rel="stylesheet" href="/assets/backend/fonts/boxicons.css"/>
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="/assets/backend/css/rtl/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/assets/backend/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="/assets/backend/css/demo.css" />
+    <link rel="stylesheet" href="/assets/backend/css/rtl/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="/assets/backend/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="/assets/backend/css/demo.css"/>
 
     <!-- Page -->
-    <link rel="stylesheet" href="/assets/backend/css/pages/page-auth.css" />
+    <link rel="stylesheet" href="/assets/backend/css/pages/page-auth.css"/>
 </head>
 
 <body>
@@ -36,15 +39,19 @@
                     <h4 class="mb-2">Welcome to Wedding Configuration! 👋</h4>
                     <p class="mb-4">Please sign-in to your account and start the adventurse</p>
                     <form class="mb-3" action="/mimin/login" method="POST" id="formAuthentication">
-                        {{ if isset(errors) }}
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">Error</h6>
-                                <p class="mb-0">{{ errors }}</p>
-                            </div>
+                        {{ if isset(error) }}
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">Error</h6>
+                            <p class="mb-0">{{ error }}</p>
+                        </div>
                         {{ end }}
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" class='form-control {{ if isset(errValidate["username"]) }} is-invalid {{ end }}' id="username" name="username" value="" placeholder="Enter your username" />
+                            <input type="text"
+                                   class='form-control {{ if isset(errValidate["username"]) }} is-invalid {{ end }}'
+                                   id="username" name="username"
+                                   value='{{ if isset(old["username"]) }}{{ old["username"] }}{{ end }}'
+                                   placeholder="Enter your username"/>
                             {{ if isset(errValidate["username"]) }}
                             <div class="invalid-feedback">{{ errValidate["username"] }}</div>
                             {{ end }}
@@ -54,7 +61,12 @@
                                 <label class="form-label">Password</label>
                             </div>
                             <div class="input-group input-group-merge">
-                                <input type="password" id="password" class='form-control  {{ if isset(errValidate["password"]) }} is-invalid {{ end }}' name="password" value="" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                <input type="password" id="password"
+                                       class='form-control  {{ if isset(errValidate["password"]) }} is-invalid {{ end }}'
+                                       name="password"
+                                       value='{{ if isset(old["password"]) }}{{ old["password"] }}{{ end }}'
+                                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                       aria-describedby="password"/>
                                 {{ if isset(errValidate["password"]) }}
                                 <div class="invalid-feedback">{{ errValidate["password"] }}</div>
                                 {{ end }}
