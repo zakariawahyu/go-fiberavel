@@ -26,14 +26,14 @@ if (musicControl) {
 		if (bgMusic.paused == true) {
 			bgMusicPlay();
 			playPauseIcon.classList.replace(
-				"icofont-music-alt",
-				"icofont-ui-pause"
+				"fa-play",
+				"fa-pause"
 			);
 		} else {
 			bgMusicPlay(false);
 			playPauseIcon.classList.replace(
-				"icofont-ui-pause",
-				"icofont-music-alt"
+				"fa-pause",
+				"fa-play"
 			);
 		}
 	});
