@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zakariawahyu/go-fiberavel/app/http/controller"
 	admin "github.com/zakariawahyu/go-fiberavel/app/http/controller/admin"
@@ -11,14 +12,14 @@ import (
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 )
 
-func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session) {
+func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session, validator *validator.Validate) {
 	ctrlHome := controller.NewHomeController(redis, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
 
 	// Route Backend
 	repoAuth := repository.NewAuthRepository(db)
-	ctrlAuth := admin.NewAuthController(repoAuth, cfg.App, session)
+	ctrlAuth := admin.NewAuthController(repoAuth, cfg.App, session, validator)
 
 	app.Get("/auth/mimin", ctrlAuth.Index)
 	app.Post("/auth/mimin", ctrlAuth.Login)
@@ -28,7 +29,7 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	repoCouple := repository.NewCoupleRepository(db)
 
 	ctrlDashboard := admin.NewDashboardController()
-	ctrlCouple := admin.NewCoupleController(repoCouple, cfg.App, session)
+	ctrlCouple := admin.NewCoupleController(repoCouple, cfg.App, session, validator)
 
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)

@@ -69,7 +69,7 @@ func (f *FlashMessage) SetFlash(c *fiber.Ctx) *fiber.Ctx {
 }
 
 func (f *FlashBuilder) WithErrorValidate(err error) *FlashBuilder {
-	f.messages["errValidate"] = middleware.GetError(err)
+	f.messages["errValidate"] = middleware.ExtractErrorsToMap(err)
 	return f
 }
 
