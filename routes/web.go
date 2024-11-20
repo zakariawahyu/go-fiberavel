@@ -25,9 +25,14 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	app.Get("/auth/unauthorized", ctrlAuth.Unauthorized)
 
 	mimin := app.Group("/mimin", session.Authenticated())
+	repoCouple := repository.NewCoupleRepository(db)
 
 	ctrlDashboard := admin.NewDashboardController()
+	ctrlCouple := admin.NewCoupleController(repoCouple, cfg.App, session)
 
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
+
+	mimin.Get("/couple/create", ctrlCouple.Create)
+	mimin.Post("/couple/store", ctrlCouple.Store)
 }
