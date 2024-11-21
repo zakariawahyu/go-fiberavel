@@ -7,6 +7,7 @@ import (
 	admin "github.com/zakariawahyu/go-fiberavel/app/http/controller/admin"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
+	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
@@ -19,7 +20,8 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 
 	// Route Backend
 	repoAuth := repository.NewAuthRepository(db)
-	ctrlAuth := admin.NewAuthController(repoAuth, cfg.App, session, validator)
+	usecaseAuth := usecase.NewAuthhUsecase(repoAuth)
+	ctrlAuth := admin.NewAuthController(usecaseAuth, cfg.App, session, validator)
 
 	app.Get("/auth/mimin", ctrlAuth.Index)
 	app.Post("/auth/mimin", ctrlAuth.Login)
@@ -28,8 +30,10 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	mimin := app.Group("/mimin", session.Authenticated())
 	repoCouple := repository.NewCoupleRepository(db)
 
+	usecaseCouple := usecase.NewCoupleUsecase(repoCouple)
+
 	ctrlDashboard := admin.NewDashboardController()
-	ctrlCouple := admin.NewCoupleController(repoCouple, cfg.App, session, validator)
+	ctrlCouple := admin.NewCoupleController(usecaseCouple, cfg.App, session, validator)
 
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
