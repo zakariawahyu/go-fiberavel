@@ -45,11 +45,15 @@ func ExtractErrorsToMap(err error) interface{} {
 		for _, err := range validationErrors {
 			switch err.Tag() {
 			case "required":
-				errors[err.Field()] = fmt.Sprintf("Field %s can not empty!", err.Field())
+				errors[err.Field()] = fmt.Sprintf("%s can not empty!", err.Field())
 			case "max":
-				errors[err.Field()] = fmt.Sprintf("Field %s must have a maximum of %s characters", err.Field(), err.Param())
+				errors[err.Field()] = fmt.Sprintf("%s must have a maximum of %s characters", err.Field(), err.Param())
 			case "url":
-				errors[err.Field()] = fmt.Sprintf("Field %s must be a valid URL", err.Field())
+				errors[err.Field()] = fmt.Sprintf("%s must be a valid URL", err.Field())
+			case "mime":
+				errors[err.Field()] = fmt.Sprintf("%s must be a valid mime type", err.Field())
+			default:
+				errors[err.Field()] = fmt.Sprintf("%s is not valid %s", err.Field(), err.Tag())
 			}
 		}
 		return errors

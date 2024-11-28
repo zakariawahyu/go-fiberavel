@@ -49,14 +49,26 @@ func (c *CoupleController) Store(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	if err := c.validator.Struct(&req); err != nil {
-		return flash.HandleValidationError(ctx, c.session.Store, err, req)
-	}
-
-	couple, err := c.coupleUsecase.Store(ctxTimeout, req)
+	image, err := helper.GetImage(ctx, "image")
 	if err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	return ctx.JSON(couple)
+	req.File = image
+	if err := c.validator.Struct(&req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	imageName, err := helper.UploadImage(ctx, req.File, req.ImageCaption)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.Image = imageName
+	_, err = c.coupleUsecase.Store(ctxTimeout, req)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully created", "/mimin/couple")
 }

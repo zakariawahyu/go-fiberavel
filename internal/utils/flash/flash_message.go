@@ -94,15 +94,3 @@ func (f *FlashBuilder) Build() FlashMessage {
 		Message: f.messages,
 	}
 }
-
-func HandleValidationError(ctx *fiber.Ctx, store *session.Store, err error, data interface{}) error {
-	build := NewMessage(store).WithErrorValidate(err).WithInput(data).Build()
-
-	return build.SetFlash(ctx).RedirectBack("/")
-}
-
-func HandleError(ctx *fiber.Ctx, store *session.Store, err error, data interface{}) error {
-	build := NewMessage(store).WithError(err).WithInput(data).Build()
-
-	return build.SetFlash(ctx).RedirectBack("/")
-}
