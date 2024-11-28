@@ -26,3 +26,18 @@ WHERE id = $1 AND deleted_at IS NULL;
 
 -- name: DeleteCouple :exec
 UPDATE couples SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL;
+
+-- name: DatatablesCouple :many
+SELECT id, couple_type, name
+FROM couples
+WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text || '%') AND deleted_at IS NULL
+ORDER BY (case when $2 = 'couple_type' and $3 = 'asc' then couple_type end) ASC,
+         (case when $2 = 'couple_type' and $3 = 'desc' then couple_type end) DESC,
+         (case when $2 = 'name' and $3 = 'asc' then name end) ASC,
+         (case when $2 = 'name' and $3 = 'desc' then name end) DESC
+LIMIT $4 OFFSET $5;
+
+-- name: CountCouple :one
+SELECT COUNT(*)
+FROM couples
+WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text || '%') AND deleted_at IS NULL;

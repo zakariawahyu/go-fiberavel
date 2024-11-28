@@ -9,6 +9,19 @@ import (
 	"context"
 )
 
+const countCouple = `-- name: CountCouple :one
+SELECT COUNT(*)
+FROM couples
+WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text || '%') AND deleted_at IS NULL
+`
+
+func (q *Queries) CountCouple(ctx context.Context, dollar_1 string) (int64, error) {
+	row := q.db.QueryRow(ctx, countCouple, dollar_1)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createCouple = `-- name: CreateCouple :one
 INSERT INTO couples (
     couple_type, name, parent_description, father_name, mother_name, image, image_caption, instagram_url
@@ -56,6 +69,57 @@ func (q *Queries) CreateCouple(ctx context.Context, arg CreateCoupleParams) (Cou
 		&i.DeletedAt,
 	)
 	return i, err
+}
+
+const datatablesCouple = `-- name: DatatablesCouple :many
+SELECT id, couple_type, name
+FROM couples
+WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text || '%') AND deleted_at IS NULL
+ORDER BY (case when $2 = 'couple_type' and $3 = 'asc' then couple_type end) ASC,
+         (case when $2 = 'couple_type' and $3 = 'desc' then couple_type end) DESC,
+         (case when $2 = 'name' and $3 = 'asc' then name end) ASC,
+         (case when $2 = 'name' and $3 = 'desc' then name end) DESC
+LIMIT $4 OFFSET $5
+`
+
+type DatatablesCoupleParams struct {
+	Column1 string      `json:"column_1"`
+	Column2 interface{} `json:"column_2"`
+	Column3 interface{} `json:"column_3"`
+	Limit   int32       `json:"limit"`
+	Offset  int32       `json:"offset"`
+}
+
+type DatatablesCoupleRow struct {
+	ID         int64  `json:"id"`
+	CoupleType string `json:"couple_type"`
+	Name       string `json:"name"`
+}
+
+func (q *Queries) DatatablesCouple(ctx context.Context, arg DatatablesCoupleParams) ([]DatatablesCoupleRow, error) {
+	rows, err := q.db.Query(ctx, datatablesCouple,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []DatatablesCoupleRow
+	for rows.Next() {
+		var i DatatablesCoupleRow
+		if err := rows.Scan(&i.ID, &i.CoupleType, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const deleteCouple = `-- name: DeleteCouple :exec

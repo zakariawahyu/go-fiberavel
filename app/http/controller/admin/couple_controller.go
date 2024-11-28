@@ -9,6 +9,7 @@ import (
 	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
+	"github.com/zakariawahyu/go-fiberavel/internal/utils/datatables"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/flash"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
 	"time"
@@ -28,6 +29,27 @@ func NewCoupleController(coupleUsecase usecase.CoupleUsecase, cfgApp config.App,
 		session:       session,
 		validator:     validator,
 	}
+}
+
+func (c *CoupleController) Index(ctx *fiber.Ctx) error {
+	return ctx.Render("backend/pages/couple/index", nil)
+}
+
+func (c *CoupleController) Datatables(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	params, err := datatables.ParseDataTableParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	couples, err := c.coupleUsecase.Datatables(ctxTimeout, params)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(couples)
 }
 
 func (c *CoupleController) Create(ctx *fiber.Ctx) error {

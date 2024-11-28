@@ -38,6 +38,8 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
 
+	mimin.Get("/couple", ctrlCouple.Index)
 	mimin.Get("/couple/create", ctrlCouple.Create)
 	mimin.Post("/couple/store", ctrlCouple.Store)
+	mimin.Get("/couple/datatables", ctrlCouple.Datatables)
 }

@@ -11,6 +11,8 @@ type coupleRepository struct {
 
 type CoupleRepository interface {
 	Insert(ctx context.Context, request sqlc.CreateCoupleParams) (sqlc.Couple, error)
+	Datatables(ctx context.Context, arg sqlc.DatatablesCoupleParams) ([]sqlc.DatatablesCoupleRow, error)
+	Count(ctx context.Context, search string) (int64, error)
 }
 
 func NewCoupleRepository(db *sqlc.Queries) *coupleRepository {
@@ -26,4 +28,21 @@ func (r *coupleRepository) Insert(ctx context.Context, request sqlc.CreateCouple
 	}
 
 	return couple, nil
+}
+
+func (r *coupleRepository) Datatables(ctx context.Context, arg sqlc.DatatablesCoupleParams) ([]sqlc.DatatablesCoupleRow, error) {
+	couples, err := r.db.DatatablesCouple(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
+
+	return couples, nil
+}
+func (r *coupleRepository) Count(ctx context.Context, search string) (int64, error) {
+	count, err := r.db.CountCouple(ctx, search)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
