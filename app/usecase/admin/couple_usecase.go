@@ -7,6 +7,7 @@ import (
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/datatables"
+	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
 )
 
 type coupleUsecase struct {
@@ -14,7 +15,9 @@ type coupleUsecase struct {
 }
 
 type CoupleUsecase interface {
+	FindByID(ctx context.Context, id int64) (sqlc.GetCoupleRow, error)
 	Store(ctx context.Context, req request.CreateCoupleRequest) (sqlc.Couple, error)
+	Update(ctx context.Context, req request.UpdateCoupleRequest) error
 	Datatables(ctx context.Context, params *datatables.DataTableParams) (*datatables.DataTableResponse, error)
 }
 
@@ -22,6 +25,10 @@ func NewCoupleUsecase(coupleRepo repository.CoupleRepository) CoupleUsecase {
 	return &coupleUsecase{
 		coupleRepo: coupleRepo,
 	}
+}
+
+func (u *coupleUsecase) FindByID(ctx context.Context, id int64) (sqlc.GetCoupleRow, error) {
+	return u.coupleRepo.FindByID(ctx, id)
 }
 
 func (u *coupleUsecase) Store(ctx context.Context, req request.CreateCoupleRequest) (sqlc.Couple, error) {
@@ -39,13 +46,25 @@ func (u *coupleUsecase) Store(ctx context.Context, req request.CreateCoupleReque
 	return result, nil
 }
 
+func (u *coupleUsecase) Update(ctx context.Context, req request.UpdateCoupleRequest) error {
+	var couple sqlc.UpdateCoupleParams
+
+	if err := smapping.FillStruct(&couple, smapping.MapFields(&req)); err != nil {
+		return err
+	}
+
+	couple.Image = helper.StringToPointer(*couple.Image)
+
+	return u.coupleRepo.Update(ctx, couple)
+}
+
 func (u *coupleUsecase) Datatables(ctx context.Context, params *datatables.DataTableParams) (*datatables.DataTableResponse, error) {
 	var total, filtered int64
 
 	search := params.Search
 	orderColumn := map[string]string{
-		"0": "couple_type",
-		"1": "name",
+		"1": "couple_type",
+		"2": "name",
 	}
 
 	arg := sqlc.DatatablesCoupleParams{

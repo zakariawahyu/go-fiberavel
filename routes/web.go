@@ -13,6 +13,18 @@ import (
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 )
 
+type resourceRoutes struct {
+	Index      fiber.Handler
+	Store      fiber.Handler
+	Create     fiber.Handler
+	Publish    fiber.Handler
+	Datatables fiber.Handler
+	Show       fiber.Handler
+	Update     fiber.Handler
+	Edit       fiber.Handler
+	Destroy    fiber.Handler
+}
+
 func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session, validator *validator.Validate) {
 	ctrlHome := controller.NewHomeController(redis, cfg.App)
 
@@ -28,18 +40,33 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	app.Get("/auth/unauthorized", ctrlAuth.Unauthorized)
 
 	mimin := app.Group("/mimin", session.Authenticated())
+
 	repoCouple := repository.NewCoupleRepository(db)
-
 	usecaseCouple := usecase.NewCoupleUsecase(repoCouple)
-
-	ctrlDashboard := admin.NewDashboardController()
 	ctrlCouple := admin.NewCoupleController(usecaseCouple, cfg.App, session, validator)
 
+	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
 
-	mimin.Get("/couple", ctrlCouple.Index)
-	mimin.Get("/couple/create", ctrlCouple.Create)
-	mimin.Post("/couple/store", ctrlCouple.Store)
-	mimin.Get("/couple/datatables", ctrlCouple.Datatables)
+	registerResources(mimin, "couple", resourceRoutes{
+		Index:      ctrlCouple.Index,
+		Store:      ctrlCouple.Store,
+		Create:     ctrlCouple.Create,
+		Datatables: ctrlCouple.Datatables,
+		Edit:       ctrlCouple.Edit,
+		Update:     ctrlCouple.Update,
+	})
+}
+
+func registerResources(group fiber.Router, resources string, handler resourceRoutes) {
+	group.Get(resources, handler.Index)
+	group.Post(resources, handler.Store)
+	group.Get(resources+"/create", handler.Create)
+	group.Get(resources+"/publish", handler.Publish)
+	group.Get(resources+"/datatables", handler.Datatables)
+	group.Get(resources+"/:id", handler.Show)
+	group.Post(resources+"/:id", handler.Update)
+	group.Get(resources+"/:id/edit", handler.Edit)
+	group.Get(resources+"/:id/delete", handler.Destroy)
 }

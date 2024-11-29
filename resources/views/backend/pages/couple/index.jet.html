@@ -15,10 +15,10 @@
         <table class="table table-bordered" id="datatableCouple">
             <thead>
             <tr>
-<!--                <th>No</th>-->
+                <th>No</th>
                 <th>Couple Type</th>
                 <th>Name</th>
-<!--                <th class="text-center">Action</th>-->
+                <th class="text-center">Action</th>
             </tr>
             </thead>
         </table>
@@ -41,10 +41,32 @@
             scrollX: true,
             scrollCollapse: true,
             columns: [
-                // { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                { data: 'couple_type', name: 'couple_type'},
+                {   data: 'index',
+                    searchable: false,
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {   data: 'couple_type',
+                    name: 'couple_type',
+                    render: function(data, type, row) {
+                        return row.couple_type.toUpperCase();
+                    },
+                },
                 { data: 'name', name: 'name'},
-                // { data: 'action', name: 'action'},
+                {
+                    data: "action",
+                    searchable: false,
+                    sortable: false,
+                    render: function(data, type, row) {
+                        return '<div class="text-center">' +
+                            '<a href="couple/'+row.id+'" class="btn btn-sm btn-success" title="Show"><i class="fa fa-eye"></i> Show</a>' +
+                            ' <a href="couple/'+row.id+'/edit" class="btn btn-sm btn-dark" title="Edit"><i class="fa fa-edit"></i> Edit</a>' +
+                            ' <a href="couple/'+row.id+'/delete" class="btn btn-sm btn-danger" title="Delete"><i class="fa fa-trash"></i> Delete</a>' +
+                            '</div>';
+                    }
+                }
             ]
         })
     });

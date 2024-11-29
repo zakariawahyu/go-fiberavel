@@ -32,14 +32,14 @@ INSERT INTO couples (
 `
 
 type CreateCoupleParams struct {
-	CoupleType        string `json:"couple_type"`
-	Name              string `json:"name"`
-	ParentDescription string `json:"parent_description"`
-	FatherName        string `json:"father_name"`
-	MotherName        string `json:"mother_name"`
-	Image             string `json:"image"`
-	ImageCaption      string `json:"image_caption"`
-	InstagramUrl      string `json:"instagram_url"`
+	CoupleType        string  `json:"couple_type"`
+	Name              string  `json:"name"`
+	ParentDescription string  `json:"parent_description"`
+	FatherName        string  `json:"father_name"`
+	MotherName        string  `json:"mother_name"`
+	Image             *string `json:"image"`
+	ImageCaption      string  `json:"image_caption"`
+	InstagramUrl      string  `json:"instagram_url"`
 }
 
 func (q *Queries) CreateCouple(ctx context.Context, arg CreateCoupleParams) (Couple, error) {
@@ -78,7 +78,8 @@ WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text ||
 ORDER BY (case when $2 = 'couple_type' and $3 = 'asc' then couple_type end) ASC,
          (case when $2 = 'couple_type' and $3 = 'desc' then couple_type end) DESC,
          (case when $2 = 'name' and $3 = 'asc' then name end) ASC,
-         (case when $2 = 'name' and $3 = 'desc' then name end) DESC
+         (case when $2 = 'name' and $3 = 'desc' then name end) DESC,
+         (case when $2 = '' then created_at end) DESC
 LIMIT $4 OFFSET $5
 `
 
@@ -136,15 +137,15 @@ SELECT id, couple_type, name, parent_description, father_name, mother_name, imag
 `
 
 type GetAllCoupleRow struct {
-	ID                int64  `json:"id"`
-	CoupleType        string `json:"couple_type"`
-	Name              string `json:"name"`
-	ParentDescription string `json:"parent_description"`
-	FatherName        string `json:"father_name"`
-	MotherName        string `json:"mother_name"`
-	Image             string `json:"image"`
-	ImageCaption      string `json:"image_caption"`
-	InstagramUrl      string `json:"instagram_url"`
+	ID                int64   `json:"id"`
+	CoupleType        string  `json:"couple_type"`
+	Name              string  `json:"name"`
+	ParentDescription string  `json:"parent_description"`
+	FatherName        string  `json:"father_name"`
+	MotherName        string  `json:"mother_name"`
+	Image             *string `json:"image"`
+	ImageCaption      string  `json:"image_caption"`
+	InstagramUrl      string  `json:"instagram_url"`
 }
 
 func (q *Queries) GetAllCouple(ctx context.Context) ([]GetAllCoupleRow, error) {
@@ -182,15 +183,15 @@ SELECT id, couple_type, name, parent_description, father_name, mother_name, imag
 `
 
 type GetCoupleRow struct {
-	ID                int64  `json:"id"`
-	CoupleType        string `json:"couple_type"`
-	Name              string `json:"name"`
-	ParentDescription string `json:"parent_description"`
-	FatherName        string `json:"father_name"`
-	MotherName        string `json:"mother_name"`
-	Image             string `json:"image"`
-	ImageCaption      string `json:"image_caption"`
-	InstagramUrl      string `json:"instagram_url"`
+	ID                int64   `json:"id"`
+	CoupleType        string  `json:"couple_type"`
+	Name              string  `json:"name"`
+	ParentDescription string  `json:"parent_description"`
+	FatherName        string  `json:"father_name"`
+	MotherName        string  `json:"mother_name"`
+	Image             *string `json:"image"`
+	ImageCaption      string  `json:"image_caption"`
+	InstagramUrl      string  `json:"instagram_url"`
 }
 
 func (q *Queries) GetCouple(ctx context.Context, id int64) (GetCoupleRow, error) {
@@ -212,27 +213,28 @@ func (q *Queries) GetCouple(ctx context.Context, id int64) (GetCoupleRow, error)
 
 const updateCouple = `-- name: UpdateCouple :exec
 UPDATE couples SET
+    updated_at = NOW(),
     couple_type = $2,
     name = $3,
     parent_description = $4,
     father_name = $5,
     mother_name = $6,
-    image = $7,
+    image = COALESCE($7, image),
     image_caption = $8,
     instagram_url = $9
 WHERE id = $1 AND deleted_at IS NULL
 `
 
 type UpdateCoupleParams struct {
-	ID                int64  `json:"id"`
-	CoupleType        string `json:"couple_type"`
-	Name              string `json:"name"`
-	ParentDescription string `json:"parent_description"`
-	FatherName        string `json:"father_name"`
-	MotherName        string `json:"mother_name"`
-	Image             string `json:"image"`
-	ImageCaption      string `json:"image_caption"`
-	InstagramUrl      string `json:"instagram_url"`
+	ID                int64   `json:"id"`
+	CoupleType        string  `json:"couple_type"`
+	Name              string  `json:"name"`
+	ParentDescription string  `json:"parent_description"`
+	FatherName        string  `json:"father_name"`
+	MotherName        string  `json:"mother_name"`
+	Image             *string `json:"image"`
+	ImageCaption      string  `json:"image_caption"`
+	InstagramUrl      string  `json:"instagram_url"`
 }
 
 func (q *Queries) UpdateCouple(ctx context.Context, arg UpdateCoupleParams) error {

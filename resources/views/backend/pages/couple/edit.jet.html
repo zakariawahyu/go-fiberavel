@@ -2,7 +2,7 @@
 
 {{ block documentBody() }}
 <h4 class="fw-bold py-3 mb-4">
-    <span class="text-muted fw-light">Couple /</span> Create
+    <span class="text-muted fw-light">Couple /</span> Edit
 </h4>
 <div class="dt-action-buttons text-end mb-2">
     <div class="dt-buttons">
@@ -13,16 +13,17 @@
     <div class="col-xl">
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Form Create Couple</h5>
+                <h5 class="mb-0">Form Edit Couple</h5>
             </div>
             <div class="card-body">
-                <form action="/mimin/couple" method="POST" enctype="multipart/form-data">
+                <form action='/mimin/couple/{{ couple.ID }}' method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="_method" value="PUT">
                     <div class="mb-3">
                         <label class="form-label">Couple Type <i class="required">*</i></label>
                         <select name="couple_type" class='form-control {{ if isset(errValidate["couple_type"]) }} is-invalid {{ end }}'>
                             <option value="" selected disabled>Select Couple Type</option>
                             {{ range key, item := coupleTypes}}
-                            <option value="{{ key }}" {{ if isset(old["couple_type"]) && old["couple_type"] == key }}selected{{ end }}>{{ item }}</option>
+                            <option value="{{ key }}" {{ if (isset(old["couple_type"]) && old["couple_type"]) || couple.CoupleType == key }}selected{{ end }}>{{ item }}</option>
                             {{ end }}
                         </select>
                         {{ if isset(errValidate["couple_type"]) }}
@@ -31,41 +32,41 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Name <i class="required">*</i></label>
-                        <input type="text" name="name" class='form-control {{ if isset(errValidate["name"]) }} is-invalid {{ end }}' placeholder="Insert Name" value='{{ if isset(old["name"]) }}{{ old["name"] }}{{ end }}' />
+                        <input type="text" name="name" class='form-control {{ if isset(errValidate["name"]) }} is-invalid {{ end }}' placeholder="Insert Name" value='{{ if isset(old["name"]) }}{{ old["name"] }}{{else}}{{couple.Name}}{{ end }}' />
                         {{ if isset(errValidate["name"]) }}
                         <div class="invalid-feedback">{{ errValidate["name"] }}</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Parent Description <i class="required">*</i></label>
-                        <input type="text" name="parent_description" class='form-control {{ if isset(errValidate["parent_description"]) }} is-invalid {{ end }}' placeholder="Insert Parent Description" value='{{ if isset(old["parent_description"]) }}{{ old["parent_description"] }}{{ end }}' />
+                        <input type="text" name="parent_description" class='form-control {{ if isset(errValidate["parent_description"]) }} is-invalid {{ end }}' placeholder="Insert Parent Description" value='{{ if isset(old["parent_description"]) }}{{ old["parent_description"] }}{{else}}{{couple.ParentDescription}}{{ end }}' />
                         {{ if isset(errValidate["parent_description"]) }}
                         <div class="invalid-feedback">{{ errValidate["parent_description"] }}</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Father Name <i class="required">*</i></label>
-                        <input type="text" name="father_name" class='form-control {{ if isset(errValidate["father_name"]) }} is-invalid {{ end }}' placeholder="Insert Father Name" value='{{ if isset(old["father_name"]) }}{{ old["father_name"] }}{{ end }}' />
+                        <input type="text" name="father_name" class='form-control {{ if isset(errValidate["father_name"]) }} is-invalid {{ end }}' placeholder="Insert Father Name" value='{{ if isset(old["father_name"]) }}{{ old["father_name"] }}{{else}}{{couple.FatherName}}{{ end }}' />
                         {{ if isset(errValidate["father_name"]) }}
                         <div class="invalid-feedback">{{ errValidate["father_name"] }}</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Mother Name <i class="required">*</i></label>
-                        <input type="text" name="mother_name" class='form-control {{ if isset(errValidate["mother_name"]) }} is-invalid {{ end }}' placeholder="Insert Mother Name" value='{{ if isset(old["mother_name"]) }}{{ old["mother_name"] }}{{ end }}' />
+                        <input type="text" name="mother_name" class='form-control {{ if isset(errValidate["mother_name"]) }} is-invalid {{ end }}' placeholder="Insert Mother Name" value='{{ if isset(old["mother_name"]) }}{{ old["mother_name"] }}{{else}}{{couple.MotherName}}{{ end }}' />
                         {{ if isset(errValidate["mother_name"]) }}
                         <div class="invalid-feedback">{{ errValidate["mother_name"] }}</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Instagram URL <i class="required">*</i></label>
-                        <input type="url" name="instagram_url" class='form-control {{ if isset(errValidate["instagram_url"]) }} is-invalid {{ end }}' placeholder="Insert Instagram URL" value='{{ if isset(old["instagram_url"]) }}{{ old["instagram_url"] }}{{ end }}' />
+                        <input type="url" name="instagram_url" class='form-control {{ if isset(errValidate["instagram_url"]) }} is-invalid {{ end }}' placeholder="Insert Instagram URL" value='{{ if isset(old["instagram_url"]) }}{{ old["instagram_url"] }}{{else}}{{couple.InstagramUrl}}{{ end }}' />
                         {{ if isset(errValidate["instagram_url"]) }}
                         <div class="invalid-feedback">{{ errValidate["instagram_url"] }}</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
-                        <img class="hidden image-output" id="image_output" name="image_output" src="" alt="Image Output">
+                        <img class="image-output" id="image_output" src="/images/{{ couple.Image }}" alt="Image Output">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Upload Image <i class="required">*</i></label>
@@ -76,7 +77,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Image Caption <i class="required">*</i></label>
-                        <input type="text" name="image_caption" class='form-control {{ if isset(errValidate["image_caption"]) }} is-invalid {{ end }}' placeholder="Insert Image Caption" value='{{ if isset(old["image_caption"]) }}{{ old["image_caption"] }}{{ end }}' />
+                        <input type="text" name="image_caption" class='form-control {{ if isset(errValidate["image_caption"]) }} is-invalid {{ end }}' placeholder="Insert Image Caption" value='{{ if isset(old["image_caption"]) }}{{ old["image_caption"] }}{{else}}{{couple.ImageCaption}}{{ end }}' />
                         {{ if isset(errValidate["image_caption"]) }}
                         <div class="invalid-feedback">{{ errValidate["image_caption"] }}</div>
                         {{ end }}

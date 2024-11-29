@@ -95,3 +95,74 @@ func (c *CoupleController) Store(ctx *fiber.Ctx) error {
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully created", "/mimin/couple")
 }
+
+func (c *CoupleController) Edit(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	id, err := helper.StrToInt64(ctx.Params("id"))
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	couple, err := c.coupleUsecase.FindByID(ctxTimeout, id)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	build := flash.NewMessage(c.session.Store).Build()
+	coupleTypes := constants.CoupleTypes
+
+	return ctx.Render("backend/pages/couple/edit", helper.Compact(fiber.Map{
+		"couple":      couple,
+		"coupleTypes": coupleTypes,
+	}, build.GetFlash(ctx)))
+
+}
+
+func (c *CoupleController) Update(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	if ctx.FormValue("_method") == "PUT" {
+		ctx.Method("PUT")
+	}
+
+	var req request.UpdateCoupleRequest
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	image, err := helper.GetImage(ctx, "image")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.File = image
+	if err := c.validator.Struct(&req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	if req.File != nil {
+		imageName, err := helper.UploadImage(ctx, req.File, req.ImageCaption)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Image = imageName
+	}
+
+	id, err := helper.StrToInt64(ctx.Params("id"))
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.ID = id
+	err = c.coupleUsecase.Update(ctxTimeout, req)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully updated", "/mimin/couple")
+}

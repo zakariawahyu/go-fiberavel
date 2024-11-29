@@ -1,6 +1,8 @@
 package datatables
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 type DataTableParams struct {
 	Draw           int    `json:"draw"`

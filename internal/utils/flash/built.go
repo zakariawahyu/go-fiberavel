@@ -20,5 +20,5 @@ func HandleValidationError(ctx *fiber.Ctx, store *session.Store, err error, data
 func HandleError(ctx *fiber.Ctx, store *session.Store, err error, data interface{}) error {
 	build := NewMessage(store).WithError(err).WithInput(data).Build()
 
-	return build.SetFlash(ctx).RedirectBack("/")
+	return build.SetFlash(ctx).RedirectBack("/mimin/dashboard")
 }
