@@ -32,7 +32,8 @@ func NewCoupleController(coupleUsecase usecase.CoupleUsecase, cfgApp config.App,
 }
 
 func (c *CoupleController) Index(ctx *fiber.Ctx) error {
-	return ctx.Render("backend/pages/couple/index", nil)
+	build := flash.NewMessage(c.session.Store).Build()
+	return ctx.Render("backend/pages/couple/index", build.GetFlash(ctx))
 }
 
 func (c *CoupleController) Datatables(ctx *fiber.Ctx) error {

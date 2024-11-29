@@ -24,5 +24,50 @@
 {{ include "script" }}
 
 {{ block documentScript() }}{{end}}
+{{ if isset(success) }}
+<script>
+    new Notify ({
+        status: 'success',
+        title: 'Success',
+        text: '{{ success }}',
+        effect: 'fade',
+        speed: 300,
+        customClass: '',
+        customIcon: '',
+        showIcon: true,
+        showCloseButton: true,
+        autoclose: true,
+        autotimeout: 4000,
+        notificationsGap: null,
+        notificationsPadding: null,
+        type: 'outline',
+        position: 'right top',
+        customWrapper: '',
+    })
+</script>
+{{ end }}
+
+{{ if isset(error) }}
+<script>
+    new Notify ({
+        status: 'error',
+        title: 'Error !',
+        text: '{{ error }}',
+        effect: 'fade',
+        speed: 300,
+        customClass: '',
+        customIcon: '',
+        showIcon: true,
+        showCloseButton: true,
+        autoclose: true,
+        autotimeout: 4000,
+        notificationsGap: null,
+        notificationsPadding: null,
+        type: 'outline',
+        position: 'right top',
+        customWrapper: '',
+    })
+</script>
+{{ end }}
 </body>
 </html>
