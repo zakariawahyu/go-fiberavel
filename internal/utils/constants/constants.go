@@ -11,3 +11,10 @@ const (
 
 	CSRFContextKey = "__CSRF__"
 )
+
+var (
+	CoupleTypes = map[string]string{
+		"cpw": "CPW",
+		"cpp": "CPP",
+	}
+)

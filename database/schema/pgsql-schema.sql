@@ -55,7 +55,7 @@ CREATE TABLE public.configurations (
     title character varying(255) NOT NULL,
     description text NOT NULL,
     image character varying(255),
-    image_caption character varying(255),
+    image_caption character varying(255) NOT NULL,
     custom_data json,
     is_active boolean NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -93,13 +93,12 @@ CREATE TABLE public.couples (
     parent_description character varying(255) NOT NULL,
     father_name character varying(255) NOT NULL,
     mother_name character varying(255) NOT NULL,
-    image character varying(255) NOT NULL,
+    image character varying(255),
     image_caption character varying(255) NOT NULL,
     instagram_url character varying(255) NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
-    deleted_at timestamp(0) without time zone,
-    CONSTRAINT couples_couple_type_check CHECK (((couple_type)::text = ANY (ARRAY[('cpp'::character varying)::text, ('cpw'::character varying)::text])))
+    deleted_at timestamp(0) without time zone
 );
 
 
@@ -128,7 +127,7 @@ ALTER SEQUENCE public.couples_id_seq OWNED BY public.couples.id;
 
 CREATE TABLE public.galleries (
     id bigint NOT NULL,
-    image character varying(255) NOT NULL,
+    image character varying(255),
     image_caption character varying(255) NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,

@@ -21,8 +21,8 @@ type Configuration struct {
 	Type         string           `json:"type"`
 	Title        string           `json:"title"`
 	Description  string           `json:"description"`
-	Image        pgtype.Text      `json:"image"`
-	ImageCaption pgtype.Text      `json:"image_caption"`
+	Image        *string          `json:"image"`
+	ImageCaption *string          `json:"image_caption"`
 	CustomData   []byte           `json:"custom_data"`
 	IsActive     bool             `json:"is_active"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
@@ -36,7 +36,7 @@ type Couple struct {
 	ParentDescription string           `json:"parent_description"`
 	FatherName        string           `json:"father_name"`
 	MotherName        string           `json:"mother_name"`
-	Image             string           `json:"image"`
+	Image             *string          `json:"image"`
 	ImageCaption      string           `json:"image_caption"`
 	InstagramUrl      string           `json:"instagram_url"`
 	CreatedAt         pgtype.Timestamp `json:"created_at"`

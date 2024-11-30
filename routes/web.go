@@ -1,24 +1,39 @@
 package routes
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zakariawahyu/go-fiberavel/app/http/controller"
 	admin "github.com/zakariawahyu/go-fiberavel/app/http/controller/admin"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
+	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 )
 
-func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session) {
+type resourceRoutes struct {
+	Index      fiber.Handler
+	Store      fiber.Handler
+	Create     fiber.Handler
+	Publish    fiber.Handler
+	Datatables fiber.Handler
+	Show       fiber.Handler
+	Update     fiber.Handler
+	Edit       fiber.Handler
+	Destroy    fiber.Handler
+}
+
+func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session, validator *validator.Validate) {
 	ctrlHome := controller.NewHomeController(redis, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
 
 	// Route Backend
 	repoAuth := repository.NewAuthRepository(db)
-	ctrlAuth := admin.NewAuthController(repoAuth, cfg.App, session)
+	usecaseAuth := usecase.NewAuthhUsecase(repoAuth)
+	ctrlAuth := admin.NewAuthController(usecaseAuth, cfg.App, session, validator)
 
 	app.Get("/auth/mimin", ctrlAuth.Index)
 	app.Post("/auth/mimin", ctrlAuth.Login)
@@ -26,8 +41,35 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 
 	mimin := app.Group("/mimin", session.Authenticated())
 
-	ctrlDashboard := admin.NewDashboardController()
+	repoCouple := repository.NewCoupleRepository(db)
+	usecaseCouple := usecase.NewCoupleUsecase(repoCouple, redis)
+	ctrlCouple := admin.NewCoupleController(usecaseCouple, cfg.App, session, validator)
 
+	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
+
+	registerResources(mimin, "couple", resourceRoutes{
+		Index:      ctrlCouple.Index,
+		Store:      ctrlCouple.Store,
+		Create:     ctrlCouple.Create,
+		Publish:    ctrlCouple.Publish,
+		Datatables: ctrlCouple.Datatables,
+		Show:       ctrlCouple.Show,
+		Update:     ctrlCouple.Update,
+		Edit:       ctrlCouple.Edit,
+		Destroy:    ctrlCouple.Destroy,
+	})
+}
+
+func registerResources(group fiber.Router, resources string, handler resourceRoutes) {
+	group.Get(resources, handler.Index)
+	group.Post(resources, handler.Store)
+	group.Get(resources+"/create", handler.Create)
+	group.Get(resources+"/publish", handler.Publish)
+	group.Get(resources+"/datatables", handler.Datatables)
+	group.Get(resources+"/:id", handler.Show)
+	group.Post(resources+"/:id", handler.Update)
+	group.Get(resources+"/:id/edit", handler.Edit)
+	group.Get(resources+"/:id/delete", handler.Destroy)
 }

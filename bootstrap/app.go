@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
@@ -10,7 +11,10 @@ import (
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/db"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
+	"github.com/zakariawahyu/go-fiberavel/internal/utils/validation"
 	"github.com/zakariawahyu/go-fiberavel/routes"
+	"reflect"
+	"strings"
 )
 
 func NewApplication() *fiber.App {
@@ -49,6 +53,7 @@ func NewApplication() *fiber.App {
 
 	// Register Static File
 	app.Static("/assets", "./public/assets")
+	app.Static("/images", "./public/images")
 
 	// Initialize Redis Store
 	cfg.Redis.SelectDB = 1
@@ -64,8 +69,20 @@ func NewApplication() *fiber.App {
 	sessionStore := middleware.InitSessionsStore(redisStore)
 	app.Use(middleware.CSRFMiddleware(sessionStore.Store))
 
+	// Initialize Validator and Register Required Struct Enabled
+	// Register Custom Tag Name
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	_ = validate.RegisterValidation("mime", validation.MimeType)
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
+
 	// Register Routes
-	routes.WebRoutes(app, cfg, queries, redis, sessionStore)
+	routes.WebRoutes(app, cfg, queries, redis, sessionStore, validate)
 	routes.ApiRoutes(app, cfg, queries, redis)
 
 	// Start Fiber App

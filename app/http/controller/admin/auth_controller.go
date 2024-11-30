@@ -2,28 +2,29 @@ package controller
 
 import (
 	"context"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	"github.com/zakariawahyu/go-fiberavel/app/http/request"
-	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
+	"github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
-	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/flash"
-	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
 	"time"
 )
 
 type AuthController struct {
-	authRepo repository.AuthRepository
-	cfgApp   config.App
-	session  *middleware.Session
+	authUsecase usecase.AuthUsecase
+	cfgApp      config.App
+	session     *middleware.Session
+	validator   *validator.Validate
 }
 
-func NewAuthController(authRepo repository.AuthRepository, cfgApp config.App, session *middleware.Session) *AuthController {
+func NewAuthController(authUsecase usecase.AuthUsecase, cfgApp config.App, session *middleware.Session, validator *validator.Validate) *AuthController {
 	return &AuthController{
-		authRepo: authRepo,
-		cfgApp:   cfgApp,
-		session:  session,
+		authUsecase: authUsecase,
+		cfgApp:      cfgApp,
+		session:     session,
+		validator:   validator,
 	}
 }
 
@@ -38,38 +39,30 @@ func (c *AuthController) Index(ctx *fiber.Ctx) error {
 	}
 
 	build := flash.NewMessage(c.session.Store).Build()
-
 	return ctx.Render("backend/pages/auth/index", build.GetFlash(ctx))
 }
 
 func (c *AuthController) Login(ctx *fiber.Ctx) error {
-	context, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
 	defer cancel()
 
-	var auth sqlc.LoginRow
+	var req request.LoginRequest
 
-	if err := ctx.BodyParser(&auth); err != nil {
-		return err
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	if err := request.LoginValidate(auth); err != nil {
-		build := flash.NewMessage(c.session.Store).WithErrorValidate(err).WithInput(auth).Build()
-		return build.SetFlash(ctx).RedirectBack("/")
+	if err := c.validator.Struct(req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
 	}
 
-	result, err := c.authRepo.Login(context, auth.Username)
+	auth, err := c.authUsecase.Login(ctxTimeout, req)
 	if err != nil {
-		build := flash.NewMessage(c.session.Store).WithError(err).WithInput(auth).Build()
-		return build.SetFlash(ctx).RedirectBack("/")
+		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	if err := helper.ComparePassword(result.Password, auth.Password); err != nil {
-		build := flash.NewMessage(c.session.Store).WithError(middleware.ErrPasswordNotMatch).WithInput(auth).Build()
-		return build.SetFlash(ctx).RedirectBack("/")
-	}
-
-	if err = c.session.SetAuth(ctx, result.Username); err != nil {
-		return err
+	if err := c.session.SetAuth(ctx, auth); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
 	return ctx.Redirect("/mimin/dashboard")

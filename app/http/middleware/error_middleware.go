@@ -1,11 +1,10 @@
 package middleware
 
 import (
-	"encoding/json"
 	"errors"
-	validation "github.com/go-ozzo/ozzo-validation"
+	"fmt"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/tidwall/gjson"
 )
 
 type ErrorResponse struct {
@@ -32,21 +31,37 @@ var ErrorHandler = func(ctx *fiber.Ctx, err error) error {
 		return ctx.Status(code).JSON(ErrorResponse{
 			Success: false,
 			Code:    code,
-			Errors:  GetError(err),
+			Errors:  ExtractErrorsToMap(err),
 		})
 	}
 
 	return nil
 }
 
-func GetError(err error) any {
-	if err, ok := err.(validation.Errors); ok {
-		res, _ := json.Marshal(err)
-		return gjson.Parse(string(res)).Value()
+func ExtractErrorsToMap(err error) interface{} {
+	errors := make(map[string]interface{})
+
+	if validationErrors, ok := err.(validator.ValidationErrors); ok {
+		for _, err := range validationErrors {
+			switch err.Tag() {
+			case "required":
+				errors[err.Field()] = fmt.Sprintf("%s can not empty!", err.Field())
+			case "max":
+				errors[err.Field()] = fmt.Sprintf("%s must have a maximum of %s characters", err.Field(), err.Param())
+			case "url":
+				errors[err.Field()] = fmt.Sprintf("%s must be a valid URL", err.Field())
+			case "mime":
+				errors[err.Field()] = fmt.Sprintf("%s must be a valid mime type", err.Field())
+			default:
+				errors[err.Field()] = fmt.Sprintf("%s is not valid %s", err.Field(), err.Tag())
+			}
+		}
+		return errors
 	}
 
 	return err.Error()
 }
+
 func getStatusCode(err error) int {
 	if err == nil {
 		return fiber.StatusOK
