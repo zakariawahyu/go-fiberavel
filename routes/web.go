@@ -57,6 +57,10 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	usecaseGift := usecase.NewGiftUsecase(repoGift, redis)
 	ctrlGift := admin.NewGiftController(usecaseGift, cfg.App, session, validator)
 
+	repoWish := repository.NewWishRepository(db)
+	usecaseWish := usecase.NewWishUsecase(repoWish, redis)
+	ctrlWish := admin.NewWishController(usecaseWish, cfg.App, session, validator)
+
 	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
@@ -108,6 +112,18 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Edit:       ctrlGift.Edit,
 		Destroy:    ctrlGift.Destroy,
 	})
+
+	registerResources(mimin, "wish", resourceRoutes{
+		Index:      ctrlWish.Index,
+		Store:      DefaultHandler,
+		Create:     DefaultHandler,
+		Publish:    ctrlWish.Publish,
+		Datatables: ctrlWish.Datatables,
+		Show:       DefaultHandler,
+		Update:     DefaultHandler,
+		Edit:       DefaultHandler,
+		Destroy:    ctrlWish.Destroy,
+	})
 }
 
 func registerResources(group fiber.Router, resources string, handler resourceRoutes) {
@@ -120,4 +136,8 @@ func registerResources(group fiber.Router, resources string, handler resourceRou
 	group.Post(resources+"/:id", handler.Update)
 	group.Get(resources+"/:id/edit", handler.Edit)
 	group.Get(resources+"/:id/delete", handler.Destroy)
+}
+
+func DefaultHandler(ctx *fiber.Ctx) error {
+	return middleware.ErrNotFound
 }

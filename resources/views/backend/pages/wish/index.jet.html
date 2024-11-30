@@ -1,0 +1,66 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Wish</span>
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-warning" type="button" href="/mimin/wish/publish"><span><i class="bx bx-paper-plane me-sm-2"></i> <span class="d-none d-sm-inline-block">Publish</span></span></a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-datatable table-responsive">
+        <table class="table table-bordered" id="datatableWish">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th class="text-center">Action</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+{{ end }}
+
+{{ block documentScript() }}
+<script>
+    $(document).ready(function(){
+        $("#datatableWish").DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            pageLength: 10,
+            ajax: "/mimin/wish/datatables",
+            buttons: false,
+            searching: true,
+            scrollY: 500,
+            scrollX: true,
+            scrollCollapse: true,
+            columns: [
+                {   data: 'index',
+                    searchable: false,
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                { data: 'name', name: 'name'},
+                { data: 'wish_description', name: 'wish_description'},
+                {
+                    data: "action",
+                    searchable: false,
+                    sortable: false,
+                    render: function(data, type, row) {
+                        return '<div class="text-center">' +
+                            ' <a href="wish/'+row.id+'/delete" class="btn btn-sm btn-danger" title="Delete"><i class="fa fa-trash"></i> Delete</a>' +
+                            '</div>';
+                    }
+                }
+            ]
+        })
+    });
+</script>
+{{ end }}
