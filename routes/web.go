@@ -53,6 +53,10 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	usecaseGallery := usecase.NewGalleryUsecase(repoGallery, redis)
 	ctrlGallery := admin.NewGalleryController(usecaseGallery, cfg.App, session, validator)
 
+	repoGift := repository.NewGiftRepository(db)
+	usecaseGift := usecase.NewGiftUsecase(repoGift, redis)
+	ctrlGift := admin.NewGiftController(usecaseGift, cfg.App, session, validator)
+
 	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
@@ -91,6 +95,18 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Update:     ctrlGallery.Update,
 		Edit:       ctrlGallery.Edit,
 		Destroy:    ctrlGallery.Destroy,
+	})
+
+	registerResources(mimin, "gift", resourceRoutes{
+		Index:      ctrlGift.Index,
+		Store:      ctrlGift.Store,
+		Create:     ctrlGift.Create,
+		Publish:    ctrlGift.Publish,
+		Datatables: ctrlGift.Datatables,
+		Show:       ctrlGift.Show,
+		Update:     ctrlGift.Update,
+		Edit:       ctrlGift.Edit,
+		Destroy:    ctrlGift.Destroy,
 	})
 }
 
