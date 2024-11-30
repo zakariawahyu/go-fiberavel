@@ -15,7 +15,7 @@ type CreateCoupleRequest struct {
 }
 
 type UpdateCoupleRequest struct {
-	ID                int64                 `json:"id"`
+	ID                int64                 `json:"id" validate:"required"`
 	CoupleType        string                `json:"couple_type" form:"couple_type" validate:"required"`
 	Name              string                `json:"name" form:"name" validate:"required,max=255"`
 	ParentDescription string                `json:"parent_description" form:"parent_description" validate:"required,max=255"`

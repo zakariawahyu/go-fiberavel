@@ -136,7 +136,6 @@ func (c *CoupleController) Edit(ctx *fiber.Ctx) error {
 		"couple":      couple,
 		"coupleTypes": coupleTypes,
 	}, build.GetFlash(ctx)))
-
 }
 
 func (c *CoupleController) Update(ctx *fiber.Ctx) error {
@@ -149,6 +148,12 @@ func (c *CoupleController) Update(ctx *fiber.Ctx) error {
 
 	var req request.UpdateCoupleRequest
 
+	id, err := helper.StrToInt64(ctx.Params("id"))
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.ID = id
 	if err := ctx.BodyParser(&req); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
@@ -172,14 +177,7 @@ func (c *CoupleController) Update(ctx *fiber.Ctx) error {
 		req.Image = imageName
 	}
 
-	id, err := helper.StrToInt64(ctx.Params("id"))
-	if err != nil {
-		return flash.HandleError(ctx, c.session.Store, err, req)
-	}
-
-	req.ID = id
-	err = c.coupleUsecase.Update(ctxTimeout, req)
-	if err != nil {
+	if err = c.coupleUsecase.Update(ctxTimeout, req); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
@@ -195,8 +193,7 @@ func (c *CoupleController) Destroy(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, nil)
 	}
 
-	err = c.coupleUsecase.Destroy(ctxTimeout, id)
-	if err != nil {
+	if err = c.coupleUsecase.Destroy(ctxTimeout, id); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, nil)
 	}
 
@@ -207,11 +204,9 @@ func (c *CoupleController) Publish(ctx *fiber.Ctx) error {
 	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
 	defer cancel()
 
-	_, err := c.coupleUsecase.Publish(ctxTimeout)
-	if err != nil {
+	if err := c.coupleUsecase.Publish(ctxTimeout); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, nil)
 	}
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully published", "/mimin/couple")
-
 }
