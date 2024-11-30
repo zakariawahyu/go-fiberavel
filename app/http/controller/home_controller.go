@@ -36,7 +36,7 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	resVenueDetails, err := ctrl.redis.Get(constants.KeyVenueDetails)
+	resVenueDetails, err := ctrl.redis.Get(constants.KeyVenues)
 	if err != nil {
 		return err
 	}

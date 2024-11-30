@@ -1,0 +1,53 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Venue Detail /</span> Show
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-info" type="button" href="/mimin/venue">
+      <span>
+        <i class="bx bx-arrow-back"></i>
+        <span class="d-none d-sm-inline-block">Back</span>
+      </span>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="user-avatar-section">
+                    <div class="d-flex align-items-center flex-column">
+                        <div class="user-info text-center mb-5">
+                            {{ raw(venue.Map) }}
+                            <h4>{{ venue.Location }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-container">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Name:</span>
+                            <span>{{ venue.Name }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Location:</span>
+                            <span>{{ venue.Location }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Address:</span>
+                            <span>{{ venue.Address }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="fw-bold me-2">Date:</span>
+                            <span>{{ venue.DateHeld }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

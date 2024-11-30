@@ -10,7 +10,7 @@ import (
 )
 
 const countCouple = `-- name: CountCouple :one
-SELECT COUNT(*)
+SELECT COUNT(id)
 FROM couples
 WHERE (couple_type ILIKE '%' || $1::text || '%' OR name ILIKE '%' || $1::text || '%') AND deleted_at IS NULL
 `

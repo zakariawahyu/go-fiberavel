@@ -24,7 +24,7 @@ type CoupleUsecase interface {
 	Update(ctx context.Context, req request.UpdateCoupleRequest) error
 	Destroy(ctx context.Context, id int64) error
 	Datatables(ctx context.Context, params *datatables.DataTableParams) (*datatables.DataTableResponse, error)
-	Publish(ctx context.Context) ([]sqlc.GetAllCoupleRow, error)
+	Publish(ctx context.Context) error
 }
 
 func NewCoupleUsecase(coupleRepo repository.CoupleRepository, redis cache.Rueidis) CoupleUsecase {
@@ -117,19 +117,16 @@ func (u *coupleUsecase) Datatables(ctx context.Context, params *datatables.DataT
 	return datatables.NewDataTableResponse(params.Draw, total, filtered, couples), nil
 }
 
-func (u *coupleUsecase) Publish(ctx context.Context) ([]sqlc.GetAllCoupleRow, error) {
+func (u *coupleUsecase) Publish(ctx context.Context) error {
 	couples, err := u.coupleRepo.GetAll(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	coupleBytes, err := json.Marshal(couples)
 	if err != nil {
-		return nil, err
-	}
-	if err := u.redis.Set(constants.KeyCouples, coupleBytes, 0); err != nil {
-		return nil, err
+		return err
 	}
 
-	return couples, nil
+	return u.redis.Set(constants.KeyCouples, coupleBytes, 0)
 }

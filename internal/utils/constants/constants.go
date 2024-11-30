@@ -1,13 +1,13 @@
 package constants
 
 const (
-	KeyConfigs      = "configs"
-	KeyCouples      = "couples"
-	KeyVenueDetails = "venue_details"
-	KeyGalleries    = "galleries"
-	KeyGuestList    = "guest_lists"
-	KeyWishes       = "wishes"
-	KeyGift         = "gifts"
+	KeyConfigs   = "configs"
+	KeyCouples   = "couples"
+	KeyVenues    = "venues"
+	KeyGalleries = "galleries"
+	KeyGuestList = "guest_lists"
+	KeyWishes    = "wishes"
+	KeyGift      = "gifts"
 
 	CSRFContextKey = "__CSRF__"
 )

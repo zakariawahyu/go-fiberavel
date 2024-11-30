@@ -1,0 +1,72 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Venue /</span> Create
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-info" type="button" href="/mimin/venue"><span><i class="bx bx-arrow-back"></i> <span class="d-none d-sm-inline-block">Back</span></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Form Create Venue</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/venue" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Name <i class="required">*</i></label>
+                        <input type="text" name="name" class='form-control {{ if isset(errValidate["name"]) }} is-invalid {{ end }}' placeholder="Insert Name" value='{{ if isset(old["name"]) }}{{ old["name"] }}{{ end }}' />
+                        {{ if isset(errValidate["name"]) }}
+                            <div class="invalid-feedback">{{ errValidate["name"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location <i class="required">*</i></label>
+                        <input type="text" name="location" class='form-control {{ if isset(errValidate["location"]) }} is-invalid {{ end }}' placeholder="Insert Location" value='{{ if isset(old["location"]) }}{{ old["location"] }}{{ end }}' />
+                        {{ if isset(errValidate["location"]) }}
+                            <div class="invalid-feedback">{{ errValidate["location"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address <i class="required">*</i></label>
+                        <textarea name="address" class='form-control {{ if isset(errValidate["address"]) }} is-invalid {{ end }}' cols="20" rows="5" placeholder="Insert Address">{{ if isset(old["address"]) }}{{ old["address"] }}{{ end }}</textarea>
+                        {{ if isset(errValidate["address"]) }}
+                            <div class="invalid-feedback">{{ errValidate["address"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date and Time <i class="required">*</i></label>
+                        <input type="text" name="date_held" class='form-control {{ if isset(errValidate["date_held"]) }} is-invalid {{ end }}' placeholder="Choose date and time" id="flatpickr-datetime" value='{{ if isset(old["date_held"]) }}{{ old["date_held"] }}{{ end }}' readonly="readonly">
+                        {{ if isset(errValidate["date_held"]) }}
+                            <div class="invalid-feedback">{{ errValidate["date_held"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Maps <i class="required">*</i></label>
+                        <textarea name="map" class='form-control {{ if isset(errValidate["map"]) }} is-invalid {{ end }}' cols="20" rows="5" placeholder="Insert Embed from Google Maps">{{ if isset(old["map"]) }}{{ old["map"] }}{{ end }}</textarea>
+                        {{ if isset(errValidate["map"]) }}
+                            <div class="invalid-feedback">{{ errValidate["map"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+{{ block documentScript() }}
+<script>
+    $("#flatpickr-datetime").flatpickr({
+        enableTime: !0,
+        dateFormat: "Y-m-d H:i"
+    });
+</script>
+{{ end }}

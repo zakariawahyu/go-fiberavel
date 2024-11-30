@@ -22,7 +22,7 @@ type Configuration struct {
 	Title        string           `json:"title"`
 	Description  string           `json:"description"`
 	Image        *string          `json:"image"`
-	ImageCaption *string          `json:"image_caption"`
+	ImageCaption string           `json:"image_caption"`
 	CustomData   []byte           `json:"custom_data"`
 	IsActive     bool             `json:"is_active"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
@@ -46,7 +46,7 @@ type Couple struct {
 
 type Gallery struct {
 	ID           int64            `json:"id"`
-	Image        string           `json:"image"`
+	Image        *string          `json:"image"`
 	ImageCaption string           `json:"image_caption"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
 	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
@@ -87,12 +87,12 @@ type SchemaMigration struct {
 	Version string `json:"version"`
 }
 
-type VenueDetail struct {
+type Venue struct {
 	ID        int64            `json:"id"`
 	Name      string           `json:"name"`
 	Location  string           `json:"location"`
 	Address   string           `json:"address"`
-	Date      pgtype.Timestamp `json:"date"`
+	DateHeld  string           `json:"date_held"`
 	Map       string           `json:"map"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`

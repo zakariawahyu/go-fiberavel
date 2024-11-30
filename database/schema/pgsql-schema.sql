@@ -267,15 +267,15 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: venue_details; Type: TABLE; Schema: public; Owner: -
+-- Name: venues; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.venue_details (
+CREATE TABLE public.venues (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     location character varying(255) NOT NULL,
     address character varying(255) NOT NULL,
-    date timestamp(0) without time zone NOT NULL,
+    date_held character varying(50) NOT NULL,
     map text NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -284,10 +284,10 @@ CREATE TABLE public.venue_details (
 
 
 --
--- Name: venue_details_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: venues_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.venue_details_id_seq
+CREATE SEQUENCE public.venues_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -296,10 +296,10 @@ CREATE SEQUENCE public.venue_details_id_seq
 
 
 --
--- Name: venue_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: venues_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.venue_details_id_seq OWNED BY public.venue_details.id;
+ALTER SEQUENCE public.venues_id_seq OWNED BY public.venues.id;
 
 
 --
@@ -385,10 +385,10 @@ ALTER TABLE ONLY public.rsvp ALTER COLUMN id SET DEFAULT nextval('public.rsvp_id
 
 
 --
--- Name: venue_details id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: venues id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.venue_details ALTER COLUMN id SET DEFAULT nextval('public.venue_details_id_seq'::regclass);
+ALTER TABLE ONLY public.venues ALTER COLUMN id SET DEFAULT nextval('public.venues_id_seq'::regclass);
 
 
 --
@@ -471,11 +471,11 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: venue_details venue_details_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: venues venues_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.venue_details
-    ADD CONSTRAINT venue_details_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.venues
+    ADD CONSTRAINT venues_pkey PRIMARY KEY (id);
 
 
 --
