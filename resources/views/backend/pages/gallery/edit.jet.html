@@ -1,0 +1,64 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Gallery /</span> Edit
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-info" type="button" href="/mimin/gallery"><span><i class="bx bx-arrow-back"></i> <span class="d-none d-sm-inline-block">Back</span></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Form Edit Gallery</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/gallery/{{ gallery.ID }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="_method" value="PUT">
+                    <div class="mb-3">
+                        <img class="image-output" id="image_output" src="/images/{{ gallery.Image }}" alt="Image Output">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Image <i class="required">*</i></label>
+                        <input type="file" name="image" id="image" class='form-control {{ if isset(errValidate["image"]) }} is-invalid {{ end }}' onchange="loadFile(event, $(this))" accept=".jpg, .jpeg, .png">
+                        {{ if isset(errValidate["image"]) }}
+                            <div class="invalid-feedback">{{ errValidate["image"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image Caption <i class="required">*</i></label>
+                        <input type="text" name="image_caption" class='form-control {{ if isset(errValidate["image_caption"]) }} is-invalid {{ end }}' placeholder="Insert Image Caption" value='{{ if isset(old["image_caption"]) }}{{ old["image_caption"] }}{{else}}{{gallery.ImageCaption}}{{ end }}' />
+                        {{ if isset(errValidate["image_caption"]) }}
+                            <div class="invalid-feedback">{{ errValidate["image_caption"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+{{ block documentScript() }}
+<script>
+    var loadFile = function(event, el) {
+        var output = document.getElementById(el.attr('id') + '_output');
+
+        output.src = URL.createObjectURL(event.target.files[0]);
+
+        if (output.classList.contains('hidden')) {
+            output.classList.remove('hidden');
+        }
+
+        output.onload = function() {
+            URL.revokeObjectURL(output.src)
+        }
+    };
+</script>
+{{ end }}
