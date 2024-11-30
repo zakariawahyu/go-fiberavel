@@ -14,6 +14,7 @@ type CoupleRepository interface {
 	FindByID(ctx context.Context, id int64) (sqlc.GetCoupleRow, error)
 	Insert(ctx context.Context, request sqlc.CreateCoupleParams) (sqlc.Couple, error)
 	Update(ctx context.Context, request sqlc.UpdateCoupleParams) error
+	Delete(ctx context.Context, id int64) error
 	Datatables(ctx context.Context, arg sqlc.DatatablesCoupleParams) ([]sqlc.DatatablesCoupleRow, error)
 	Count(ctx context.Context, search string) (int64, error)
 }
@@ -54,6 +55,10 @@ func (r *coupleRepository) Update(ctx context.Context, request sqlc.UpdateCouple
 	return r.db.UpdateCouple(ctx, request)
 }
 
+func (r *coupleRepository) Delete(ctx context.Context, id int64) error {
+	return r.db.DeleteCouple(ctx, id)
+}
+
 func (r *coupleRepository) Datatables(ctx context.Context, arg sqlc.DatatablesCoupleParams) ([]sqlc.DatatablesCoupleRow, error) {
 	couples, err := r.db.DatatablesCouple(ctx, arg)
 	if err != nil {
@@ -62,6 +67,7 @@ func (r *coupleRepository) Datatables(ctx context.Context, arg sqlc.DatatablesCo
 
 	return couples, nil
 }
+
 func (r *coupleRepository) Count(ctx context.Context, search string) (int64, error) {
 	count, err := r.db.CountCouple(ctx, search)
 	if err != nil {

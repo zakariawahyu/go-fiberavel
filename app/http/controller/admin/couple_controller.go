@@ -96,6 +96,25 @@ func (c *CoupleController) Store(ctx *fiber.Ctx) error {
 	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully created", "/mimin/couple")
 }
 
+func (c *CoupleController) Show(ctx *fiber.Ctx) error {
+	id, err := helper.StrToInt64(ctx.Params("id"))
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	couple, err := c.coupleUsecase.FindByID(ctx.Context(), id)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	coupleTypes := constants.CoupleTypes
+
+	return ctx.Render("backend/pages/couple/show", fiber.Map{
+		"couple":      couple,
+		"coupleTypes": coupleTypes,
+	})
+}
+
 func (c *CoupleController) Edit(ctx *fiber.Ctx) error {
 	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
 	defer cancel()
@@ -165,4 +184,34 @@ func (c *CoupleController) Update(ctx *fiber.Ctx) error {
 	}
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully updated", "/mimin/couple")
+}
+
+func (c *CoupleController) Destroy(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	id, err := helper.StrToInt64(ctx.Params("id"))
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	err = c.coupleUsecase.Destroy(ctxTimeout, id)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully deleted", "/mimin/couple")
+}
+
+func (c *CoupleController) Publish(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	_, err := c.coupleUsecase.Publish(ctxTimeout)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Couple successfully published", "/mimin/couple")
+
 }

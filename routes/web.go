@@ -42,7 +42,7 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	mimin := app.Group("/mimin", session.Authenticated())
 
 	repoCouple := repository.NewCoupleRepository(db)
-	usecaseCouple := usecase.NewCoupleUsecase(repoCouple)
+	usecaseCouple := usecase.NewCoupleUsecase(repoCouple, redis)
 	ctrlCouple := admin.NewCoupleController(usecaseCouple, cfg.App, session, validator)
 
 	ctrlDashboard := admin.NewDashboardController(session)
@@ -53,9 +53,12 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Index:      ctrlCouple.Index,
 		Store:      ctrlCouple.Store,
 		Create:     ctrlCouple.Create,
+		Publish:    ctrlCouple.Publish,
 		Datatables: ctrlCouple.Datatables,
-		Edit:       ctrlCouple.Edit,
+		Show:       ctrlCouple.Show,
 		Update:     ctrlCouple.Update,
+		Edit:       ctrlCouple.Edit,
+		Destroy:    ctrlCouple.Destroy,
 	})
 }
 
