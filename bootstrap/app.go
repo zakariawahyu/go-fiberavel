@@ -83,7 +83,7 @@ func NewApplication() *fiber.App {
 
 	// Register Routes
 	routes.WebRoutes(app, cfg, queries, redis, sessionStore, validate)
-	routes.ApiRoutes(app, cfg, queries, redis)
+	routes.ApiRoutes(app, cfg, queries, redis, validate)
 
 	// Start Fiber App
 	log.Fatal(app.Listen(cfg.App.Port))

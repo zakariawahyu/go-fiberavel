@@ -1,0 +1,54 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Gift /</span> Create
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-info" type="button" href="/mimin/gift"><span><i class="bx bx-arrow-back"></i> <span class="d-none d-sm-inline-block">Back</span></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Form Create Gift</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/gift" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Bank <i class="required">*</i></label>
+                        <select name="bank" class='form-control {{ if isset(errValidate["bank"]) }} is-invalid {{ end }}'>
+                            <option value="" selected disabled>Select Bank</option>
+                            {{ range key, item := banks}}
+                                <option value="{{ key }}" {{ if isset(old["bank"]) && old["bank"] == key }}selected{{ end }}>{{ item }}</option>
+                            {{ end }}
+                        </select>
+                        {{ if isset(errValidate["bank"]) }}
+                            <div class="invalid-feedback">{{ errValidate["bank"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Name <i class="required">*</i></label>
+                        <input type="text" name="account_name" class='form-control {{ if isset(errValidate["account_name"]) }} is-invalid {{ end }}' placeholder="Insert Account Name" value='{{ if isset(old["account_name"]) }}{{ old["account_name"] }}{{ end }}' />
+                        {{ if isset(errValidate["account_name"]) }}
+                            <div class="invalid-feedback">{{ errValidate["account_name"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Number <i class="required">*</i></label>
+                        <input type="text" name="account_number" class='form-control {{ if isset(errValidate["account_number"]) }} is-invalid {{ end }}' placeholder="Insert Account NUmber" value='{{ if isset(old["account_number"]) }}{{ old["account_number"] }}{{ end }}' />
+                        {{ if isset(errValidate["account_number"]) }}
+                            <div class="invalid-feedback">{{ errValidate["account_number"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

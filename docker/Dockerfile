@@ -1,3 +1,4 @@
+# Stage 1: Build
 FROM golang:1.23-alpine AS builder
 
 ENV GO111MODULE=on \
@@ -7,18 +8,24 @@ ENV GO111MODULE=on \
 
 WORKDIR "/app"
 
-COPY ./ .
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN go mod tidy
+COPY . .
 
 RUN go build -o binary cmd/main.go
 
+# Stage 2: Compression
+FROM alpine:latest AS compressor
+
+RUN apk add --no-cache upx
+COPY --from=builder /app/binary /binary
+RUN upx --lzma /binary
+
+# Stage 3: Final Image
 FROM alpine:latest
 
-RUN apk add --no-cache tzdata
-
-COPY --from=builder /app .
-
+COPY --from=compressor /binary /binary
 EXPOSE 8080
 
 ENTRYPOINT ["/binary"]

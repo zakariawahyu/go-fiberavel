@@ -49,6 +49,18 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	usecaseVenue := usecase.NewVenueUsecase(repoVenue, redis)
 	ctrlVenue := admin.NewVenueController(usecaseVenue, cfg.App, session, validator)
 
+	repoGallery := repository.NewGalleryRepository(db)
+	usecaseGallery := usecase.NewGalleryUsecase(repoGallery, redis)
+	ctrlGallery := admin.NewGalleryController(usecaseGallery, cfg.App, session, validator)
+
+	repoGift := repository.NewGiftRepository(db)
+	usecaseGift := usecase.NewGiftUsecase(repoGift, redis)
+	ctrlGift := admin.NewGiftController(usecaseGift, cfg.App, session, validator)
+
+	repoWish := repository.NewWishRepository(db)
+	usecaseWish := usecase.NewWishUsecase(repoWish, redis)
+	ctrlWish := admin.NewWishController(usecaseWish, cfg.App, session, validator)
+
 	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
@@ -76,6 +88,42 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Edit:       ctrlVenue.Edit,
 		Destroy:    ctrlVenue.Destroy,
 	})
+
+	registerResources(mimin, "gallery", resourceRoutes{
+		Index:      ctrlGallery.Index,
+		Store:      ctrlGallery.Store,
+		Create:     ctrlGallery.Create,
+		Publish:    ctrlGallery.Publish,
+		Datatables: ctrlGallery.Datatables,
+		Show:       ctrlGallery.Show,
+		Update:     ctrlGallery.Update,
+		Edit:       ctrlGallery.Edit,
+		Destroy:    ctrlGallery.Destroy,
+	})
+
+	registerResources(mimin, "gift", resourceRoutes{
+		Index:      ctrlGift.Index,
+		Store:      ctrlGift.Store,
+		Create:     ctrlGift.Create,
+		Publish:    ctrlGift.Publish,
+		Datatables: ctrlGift.Datatables,
+		Show:       ctrlGift.Show,
+		Update:     ctrlGift.Update,
+		Edit:       ctrlGift.Edit,
+		Destroy:    ctrlGift.Destroy,
+	})
+
+	registerResources(mimin, "wish", resourceRoutes{
+		Index:      ctrlWish.Index,
+		Store:      DefaultHandler,
+		Create:     DefaultHandler,
+		Publish:    ctrlWish.Publish,
+		Datatables: ctrlWish.Datatables,
+		Show:       DefaultHandler,
+		Update:     DefaultHandler,
+		Edit:       DefaultHandler,
+		Destroy:    ctrlWish.Destroy,
+	})
 }
 
 func registerResources(group fiber.Router, resources string, handler resourceRoutes) {
@@ -88,4 +136,8 @@ func registerResources(group fiber.Router, resources string, handler resourceRou
 	group.Post(resources+"/:id", handler.Update)
 	group.Get(resources+"/:id/edit", handler.Edit)
 	group.Get(resources+"/:id/delete", handler.Destroy)
+}
+
+func DefaultHandler(ctx *fiber.Ctx) error {
+	return middleware.ErrNotFound
 }
