@@ -5,9 +5,9 @@ CREATE TABLE configurations (
     title varchar(255) NOT NULL,
     description text NOT NULL,
     image varchar(255),
-    image_caption varchar(255) NOT NULL,
-    custom_data json NULL,
-    is_active bool NOT NULL,
+    image_caption varchar(255),
+    custom_data jsonb,
+    is_active bool,
     created_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT configurations_pkey PRIMARY KEY (id)

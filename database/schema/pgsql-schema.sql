@@ -56,7 +56,7 @@ CREATE TABLE public.configurations (
     description text NOT NULL,
     image character varying(255),
     image_caption character varying(255) NOT NULL,
-    custom_data json,
+    custom_data jsonb,
     is_active boolean NOT NULL,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
