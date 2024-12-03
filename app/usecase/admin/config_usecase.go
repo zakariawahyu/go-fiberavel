@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"github.com/jackc/pgx/v5"
 	"github.com/mashingan/smapping"
 	"github.com/zakariawahyu/go-fiberavel/app/http/request"
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
@@ -29,12 +31,29 @@ func NewConfigUsecase(configRepo repository.ConfigRepository, redis cache.Rueidi
 }
 
 func (u *configUsecase) FindByType(ctx context.Context, type_ string) (sqlc.GetConfigurationByTypeRow, error) {
-	return u.configRepo.FindByType(ctx, type_)
+	configuration, err := u.configRepo.FindByType(ctx, type_)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return sqlc.GetConfigurationByTypeRow{}, err
+	}
+
+	return configuration, nil
 }
 
 func (u *configUsecase) StoreCover(ctx context.Context, request request.ConfigCoverRequest) error {
 	var cover sqlc.UpdateConfigurationCoverParams
-	cover.CustomData = []byte(request.Subtitle)
+
+	customData := map[string]any{
+		"custom_data": map[string]string{
+			"subtitle": request.Subtitle,
+		},
+	}
+
+	customDataBytes, err := json.Marshal(customData)
+	if err != nil {
+		return err
+	}
+
+	cover.CustomData = customDataBytes
 	if err := smapping.FillStruct(&cover, smapping.MapFields(&request)); err != nil {
 		return nil
 	}

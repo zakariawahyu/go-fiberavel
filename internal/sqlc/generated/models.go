@@ -22,9 +22,9 @@ type Configuration struct {
 	Title        string           `json:"title"`
 	Description  string           `json:"description"`
 	Image        *string          `json:"image"`
-	ImageCaption string           `json:"image_caption"`
+	ImageCaption *string          `json:"image_caption"`
 	CustomData   []byte           `json:"custom_data"`
-	IsActive     bool             `json:"is_active"`
+	IsActive     *bool            `json:"is_active"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
 	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
 }

@@ -10,18 +10,18 @@ import (
 )
 
 const getConfigurationByType = `-- name: GetConfigurationByType :one
-SELECT id, type, title, description, image, image_caption, custom_data, is_active FROM configurations WHERE type = $1
+SELECT id, type, title, description, image, image_caption, custom_data->'custom_data' as custom_data, is_active FROM configurations WHERE type = $1
 `
 
 type GetConfigurationByTypeRow struct {
-	ID           int64   `json:"id"`
-	Type         string  `json:"type"`
-	Title        string  `json:"title"`
-	Description  string  `json:"description"`
-	Image        *string `json:"image"`
-	ImageCaption string  `json:"image_caption"`
-	CustomData   []byte  `json:"custom_data"`
-	IsActive     bool    `json:"is_active"`
+	ID           int64       `json:"id"`
+	Type         string      `json:"type"`
+	Title        string      `json:"title"`
+	Description  string      `json:"description"`
+	Image        *string     `json:"image"`
+	ImageCaption *string     `json:"image_caption"`
+	CustomData   interface{} `json:"custom_data"`
+	IsActive     *bool       `json:"is_active"`
 }
 
 func (q *Queries) GetConfigurationByType(ctx context.Context, type_ string) (GetConfigurationByTypeRow, error) {
@@ -41,9 +41,14 @@ func (q *Queries) GetConfigurationByType(ctx context.Context, type_ string) (Get
 }
 
 const updateConfigurationCover = `-- name: UpdateConfigurationCover :exec
-UPDATE configurations
-SET title = $2, description = $3, custom_data = $4
-WHERE type = $1
+INSERT INTO configurations (type, title, description, custom_data, updated_at)
+VALUES ($1, $2, $3, $4, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        custom_data = EXCLUDED.custom_data,
+        updated_at = NOW()
 `
 
 type UpdateConfigurationCoverParams struct {

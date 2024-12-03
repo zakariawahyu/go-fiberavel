@@ -21,7 +21,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Subtitle<i class="required">*</i></label>
-                        <input type="text" name="subtitle" class='form-control {{ if isset(errValidate["subtitle"]) }} is-invalid {{ end }}' placeholder="Insert Subtitle" value='{{ if isset(old["subtitle"]) }}{{ old["subtitle"] }}{{else}}{{config.CustomData}}{{ end }}' />
+                        <input type="text" name="subtitle" class='form-control {{ if isset(errValidate["subtitle"]) }} is-invalid {{ end }}' placeholder="Insert Subtitle" value='{{ if isset(old["subtitle"]) }}{{ old["subtitle"] }}{{else}}{{ if isset(config.CustomData) }}{{config.CustomData["subtitle"]}}{{ end }}{{ end }}' />
                         {{ if isset(errValidate["subtitle"]) }}
                             <div class="invalid-feedback">{{ errValidate["subtitle"] }}</div>
                         {{ end }}
