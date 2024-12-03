@@ -10,3 +10,30 @@ SET
         description = EXCLUDED.description,
         custom_data = EXCLUDED.custom_data,
         updated_at = NOW();
+
+-- name: UpdateConfigurationVenue :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW();
+
+-- name: UpdateConfigurationGift :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW();
+
+-- name: UpdateConfigurationWish :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW();

@@ -67,3 +67,66 @@ func (q *Queries) UpdateConfigurationCover(ctx context.Context, arg UpdateConfig
 	)
 	return err
 }
+
+const updateConfigurationGift = `-- name: UpdateConfigurationGift :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW()
+`
+
+type UpdateConfigurationGiftParams struct {
+	Type        string `json:"type"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+func (q *Queries) UpdateConfigurationGift(ctx context.Context, arg UpdateConfigurationGiftParams) error {
+	_, err := q.db.Exec(ctx, updateConfigurationGift, arg.Type, arg.Title, arg.Description)
+	return err
+}
+
+const updateConfigurationVenue = `-- name: UpdateConfigurationVenue :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW()
+`
+
+type UpdateConfigurationVenueParams struct {
+	Type        string `json:"type"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+func (q *Queries) UpdateConfigurationVenue(ctx context.Context, arg UpdateConfigurationVenueParams) error {
+	_, err := q.db.Exec(ctx, updateConfigurationVenue, arg.Type, arg.Title, arg.Description)
+	return err
+}
+
+const updateConfigurationWish = `-- name: UpdateConfigurationWish :exec
+INSERT INTO configurations (type, title, description, updated_at)
+VALUES ($1, $2, $3, NOW())
+ON CONFLICT (type) DO UPDATE
+SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        updated_at = NOW()
+`
+
+type UpdateConfigurationWishParams struct {
+	Type        string `json:"type"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+func (q *Queries) UpdateConfigurationWish(ctx context.Context, arg UpdateConfigurationWishParams) error {
+	_, err := q.db.Exec(ctx, updateConfigurationWish, arg.Type, arg.Title, arg.Description)
+	return err
+}
