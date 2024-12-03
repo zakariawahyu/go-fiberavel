@@ -55,9 +55,9 @@ CREATE TABLE public.configurations (
     title character varying(255) NOT NULL,
     description text NOT NULL,
     image character varying(255),
-    image_caption character varying(255) NOT NULL,
-    custom_data json,
-    is_active boolean NOT NULL,
+    image_caption character varying(255),
+    custom_data jsonb,
+    is_active boolean DEFAULT true,
     created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP
 );
@@ -468,6 +468,14 @@ ALTER TABLE ONLY public.rsvp
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: configurations unique_type; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.configurations
+    ADD CONSTRAINT unique_type UNIQUE (type);
 
 
 --
