@@ -11,6 +11,7 @@ import (
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
+	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
 )
 
 type configUsecase struct {
@@ -66,6 +67,7 @@ func (u *configUsecase) Store(ctx context.Context, request request.ConfigRequest
 			return err
 		}
 
+		update.Image = helper.StringToPointer(*update.Image)
 		// Update configuration if exists
 		if err := u.configRepo.Update(ctx, update); err != nil {
 			return err

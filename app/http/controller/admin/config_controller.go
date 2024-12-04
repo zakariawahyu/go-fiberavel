@@ -172,3 +172,57 @@ func (c *ConfigController) StoreWish(ctx *fiber.Ctx) error {
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Wish has been updated", "/mimin/config/wish")
 }
+
+func (c *ConfigController) StoreEvent(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	var req request.ConfigEventRequest
+	var config_ request.ConfigRequest
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	image, err := helper.GetImage(ctx, "image")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.File = image
+	if err := c.validator.Struct(req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	if req.File != nil {
+		imageName, err := helper.UploadImage(ctx, req.File, req.ImageCaption)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Image = imageName
+	}
+
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	customData := map[string]any{
+		"custom_data": map[string]string{
+			"date": req.Date,
+		},
+	}
+
+	customDataBytes, err := json.Marshal(customData)
+	if err != nil {
+		return err
+	}
+
+	config_.Type = "event"
+	config_.CustomData = customDataBytes
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Event has been updated", "/mimin/config/event")
+}

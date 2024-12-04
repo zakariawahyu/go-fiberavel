@@ -134,6 +134,7 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	mimin.Post("/config/venue", ctrlConfig.StoreVenue)
 	mimin.Post("/config/gift", ctrlConfig.StoreGift)
 	mimin.Post("/config/wish", ctrlConfig.StoreWish)
+	mimin.Post("/config/event", ctrlConfig.StoreEvent)
 }
 
 func registerResources(group fiber.Router, resources string, handler resourceRoutes) {
