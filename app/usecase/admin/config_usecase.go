@@ -43,38 +43,47 @@ func (u *configUsecase) Store(ctx context.Context, request request.ConfigRequest
 	var create sqlc.CreateConfigurationParams
 	var update sqlc.UpdateConfigurationParams
 
+	// Check if configuration already exists
 	_, err := u.configRepo.FindByType(ctx, request.Type)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return err
 	}
 
+	// Insert or update configuration if not exists
 	if errors.Is(err, pgx.ErrNoRows) {
+		// Fill struct with create data
 		if err := smapping.FillStruct(&create, smapping.MapFields(&request)); err != nil {
 			return err
 		}
 
+		// Insert configuration if not exists
 		if err := u.configRepo.Insert(ctx, create); err != nil {
 			return err
 		}
 	} else {
+		// Fill struct with update data
 		if err := smapping.FillStruct(&update, smapping.MapFields(&request)); err != nil {
 			return err
 		}
 
+		// Update configuration if exists
 		if err := u.configRepo.Update(ctx, update); err != nil {
 			return err
 		}
 	}
 
+	// Get configuration data for redis
 	configResult, err := u.configRepo.FindByType(ctx, request.Type)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return err
 	}
 
-	coverBytes, err := json.Marshal(configResult)
+	// Marshal configuration data to bytes
+	configBytes, err := json.Marshal(configResult)
 	if err != nil {
 		return err
 	}
 
-	return u.redis.Hset(constants.KeyConfigs, configResult.Type, string(coverBytes))
+	// Hash set configuration data to redis
+	return u.redis.Hset(constants.KeyConfigs, configResult.Type, string(configBytes))
 }
