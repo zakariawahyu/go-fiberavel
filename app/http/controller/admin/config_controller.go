@@ -2,9 +2,11 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/mashingan/smapping"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	"github.com/zakariawahyu/go-fiberavel/app/http/request"
 	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
@@ -61,12 +63,29 @@ func (c *ConfigController) StoreCover(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	req.Type = "cover"
 	if err := c.validator.Struct(req); err != nil {
 		return flash.HandleValidationError(ctx, c.session.Store, err, req)
 	}
 
-	if err := c.configUsecase.StoreCover(ctxTimeout, req); err != nil {
+	var config_ request.ConfigRequest
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	customData := map[string]any{
+		"custom_data": map[string]string{
+			"subtitle": req.Subtitle,
+		},
+	}
+
+	customDataBytes, err := json.Marshal(customData)
+	if err != nil {
+		return err
+	}
+
+	config_.Type = "cover"
+	config_.CustomData = customDataBytes
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
@@ -83,12 +102,17 @@ func (c *ConfigController) StoreVenue(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	req.Type = "venue"
 	if err := c.validator.Struct(req); err != nil {
 		return flash.HandleValidationError(ctx, c.session.Store, err, req)
 	}
 
-	if err := c.configUsecase.StoreVenue(ctxTimeout, req); err != nil {
+	var config_ request.ConfigRequest
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	config_.Type = "venue"
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
@@ -105,12 +129,17 @@ func (c *ConfigController) StoreGift(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	req.Type = "gift"
 	if err := c.validator.Struct(req); err != nil {
 		return flash.HandleValidationError(ctx, c.session.Store, err, req)
 	}
 
-	if err := c.configUsecase.StoreGift(ctxTimeout, req); err != nil {
+	var config_ request.ConfigRequest
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	config_.Type = "gift"
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
@@ -127,12 +156,17 @@ func (c *ConfigController) StoreWish(ctx *fiber.Ctx) error {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 
-	req.Type = "wish"
 	if err := c.validator.Struct(req); err != nil {
 		return flash.HandleValidationError(ctx, c.session.Store, err, req)
 	}
 
-	if err := c.configUsecase.StoreWish(ctxTimeout, req); err != nil {
+	var config_ request.ConfigRequest
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	config_.Type = "wish"
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, req)
 	}
 

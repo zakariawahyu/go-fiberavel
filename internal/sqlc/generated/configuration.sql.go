@@ -9,6 +9,35 @@ import (
 	"context"
 )
 
+const createConfiguration = `-- name: CreateConfiguration :exec
+INSERT INTO configurations (
+    type, title, description, image, image_caption, custom_data
+) VALUES (
+             $1, $2, $3, $4, $5, $6
+         )
+`
+
+type CreateConfigurationParams struct {
+	Type         string  `json:"type"`
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	Image        *string `json:"image"`
+	ImageCaption *string `json:"image_caption"`
+	CustomData   []byte  `json:"custom_data"`
+}
+
+func (q *Queries) CreateConfiguration(ctx context.Context, arg CreateConfigurationParams) error {
+	_, err := q.db.Exec(ctx, createConfiguration,
+		arg.Type,
+		arg.Title,
+		arg.Description,
+		arg.Image,
+		arg.ImageCaption,
+		arg.CustomData,
+	)
+	return err
+}
+
 const getConfigurationByType = `-- name: GetConfigurationByType :one
 SELECT id, type, title, description, image, image_caption, custom_data->'custom_data' as custom_data, is_active FROM configurations WHERE type = $1
 `
@@ -40,93 +69,34 @@ func (q *Queries) GetConfigurationByType(ctx context.Context, type_ string) (Get
 	return i, err
 }
 
-const updateConfigurationCover = `-- name: UpdateConfigurationCover :exec
-INSERT INTO configurations (type, title, description, custom_data, updated_at)
-VALUES ($1, $2, $3, $4, NOW())
-ON CONFLICT (type) DO UPDATE
-SET
-        title = EXCLUDED.title,
-        description = EXCLUDED.description,
-        custom_data = EXCLUDED.custom_data,
-        updated_at = NOW()
+const updateConfiguration = `-- name: UpdateConfiguration :exec
+UPDATE configurations SET
+    title = $2,
+    description = $3,
+    image = COALESCE($4, image),
+    image_caption = $5,
+    custom_data = $6,
+    updated_at = NOW()
+WHERE type = $1
 `
 
-type UpdateConfigurationCoverParams struct {
-	Type        string `json:"type"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	CustomData  []byte `json:"custom_data"`
+type UpdateConfigurationParams struct {
+	Type         string  `json:"type"`
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	Image        *string `json:"image"`
+	ImageCaption *string `json:"image_caption"`
+	CustomData   []byte  `json:"custom_data"`
 }
 
-func (q *Queries) UpdateConfigurationCover(ctx context.Context, arg UpdateConfigurationCoverParams) error {
-	_, err := q.db.Exec(ctx, updateConfigurationCover,
+func (q *Queries) UpdateConfiguration(ctx context.Context, arg UpdateConfigurationParams) error {
+	_, err := q.db.Exec(ctx, updateConfiguration,
 		arg.Type,
 		arg.Title,
 		arg.Description,
+		arg.Image,
+		arg.ImageCaption,
 		arg.CustomData,
 	)
-	return err
-}
-
-const updateConfigurationGift = `-- name: UpdateConfigurationGift :exec
-INSERT INTO configurations (type, title, description, updated_at)
-VALUES ($1, $2, $3, NOW())
-ON CONFLICT (type) DO UPDATE
-SET
-        title = EXCLUDED.title,
-        description = EXCLUDED.description,
-        updated_at = NOW()
-`
-
-type UpdateConfigurationGiftParams struct {
-	Type        string `json:"type"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
-func (q *Queries) UpdateConfigurationGift(ctx context.Context, arg UpdateConfigurationGiftParams) error {
-	_, err := q.db.Exec(ctx, updateConfigurationGift, arg.Type, arg.Title, arg.Description)
-	return err
-}
-
-const updateConfigurationVenue = `-- name: UpdateConfigurationVenue :exec
-INSERT INTO configurations (type, title, description, updated_at)
-VALUES ($1, $2, $3, NOW())
-ON CONFLICT (type) DO UPDATE
-SET
-        title = EXCLUDED.title,
-        description = EXCLUDED.description,
-        updated_at = NOW()
-`
-
-type UpdateConfigurationVenueParams struct {
-	Type        string `json:"type"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
-func (q *Queries) UpdateConfigurationVenue(ctx context.Context, arg UpdateConfigurationVenueParams) error {
-	_, err := q.db.Exec(ctx, updateConfigurationVenue, arg.Type, arg.Title, arg.Description)
-	return err
-}
-
-const updateConfigurationWish = `-- name: UpdateConfigurationWish :exec
-INSERT INTO configurations (type, title, description, updated_at)
-VALUES ($1, $2, $3, NOW())
-ON CONFLICT (type) DO UPDATE
-SET
-        title = EXCLUDED.title,
-        description = EXCLUDED.description,
-        updated_at = NOW()
-`
-
-type UpdateConfigurationWishParams struct {
-	Type        string `json:"type"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
-func (q *Queries) UpdateConfigurationWish(ctx context.Context, arg UpdateConfigurationWishParams) error {
-	_, err := q.db.Exec(ctx, updateConfigurationWish, arg.Type, arg.Title, arg.Description)
 	return err
 }

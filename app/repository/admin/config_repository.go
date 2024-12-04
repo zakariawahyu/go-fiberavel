@@ -11,10 +11,8 @@ type configRepository struct {
 
 type ConfigRepository interface {
 	FindByType(ctx context.Context, type_ string) (sqlc.GetConfigurationByTypeRow, error)
-	UpdateCover(ctx context.Context, request sqlc.UpdateConfigurationCoverParams) error
-	UpdateVenue(ctx context.Context, request sqlc.UpdateConfigurationVenueParams) error
-	UpdateGift(ctx context.Context, request sqlc.UpdateConfigurationGiftParams) error
-	UpdateWish(ctx context.Context, request sqlc.UpdateConfigurationWishParams) error
+	Insert(ctx context.Context, request sqlc.CreateConfigurationParams) error
+	Update(ctx context.Context, request sqlc.UpdateConfigurationParams) error
 }
 
 func NewConfigRepository(db *sqlc.Queries) *configRepository {
@@ -32,18 +30,10 @@ func (r *configRepository) FindByType(ctx context.Context, type_ string) (sqlc.G
 	return config, nil
 }
 
-func (r *configRepository) UpdateCover(ctx context.Context, request sqlc.UpdateConfigurationCoverParams) error {
-	return r.db.UpdateConfigurationCover(ctx, request)
+func (r *configRepository) Insert(ctx context.Context, request sqlc.CreateConfigurationParams) error {
+	return r.db.CreateConfiguration(ctx, request)
 }
 
-func (r *configRepository) UpdateVenue(ctx context.Context, request sqlc.UpdateConfigurationVenueParams) error {
-	return r.db.UpdateConfigurationVenue(ctx, request)
-}
-
-func (r *configRepository) UpdateGift(ctx context.Context, request sqlc.UpdateConfigurationGiftParams) error {
-	return r.db.UpdateConfigurationGift(ctx, request)
-}
-
-func (r *configRepository) UpdateWish(ctx context.Context, request sqlc.UpdateConfigurationWishParams) error {
-	return r.db.UpdateConfigurationWish(ctx, request)
+func (r *configRepository) Update(ctx context.Context, request sqlc.UpdateConfigurationParams) error {
+	return r.db.UpdateConfiguration(ctx, request)
 }
