@@ -27,7 +27,7 @@ type ConfigGiftRequest struct {
 	Description string `json:"description" form:"description" validate:"required"`
 }
 
-type ConfiWishRequest struct {
+type ConfigWishRequest struct {
 	Title       string `json:"title" form:"title" validate:"required,max=255"`
 	Description string `json:"description" form:"description" validate:"required"`
 }
@@ -42,6 +42,14 @@ type ConfigEventRequest struct {
 }
 
 type ConfigRsvpRequest struct {
+	Title        string                `json:"title" form:"title" validate:"required,max=255"`
+	Description  string                `json:"description" form:"description" validate:"required"`
+	File         *multipart.FileHeader `json:"image" form:"image" validate:"omitempty,required,mime=image/jpg-image/jpeg-image/png"`
+	Image        string                `json:"_"`
+	ImageCaption string                `json:"image_caption" form:"image_caption" validate:"required,max=255"`
+}
+
+type ConfigStoryRequest struct {
 	Title        string                `json:"title" form:"title" validate:"required,max=255"`
 	Description  string                `json:"description" form:"description" validate:"required"`
 	File         *multipart.FileHeader `json:"image" form:"image" validate:"omitempty,required,mime=image/jpg-image/jpeg-image/png"`
