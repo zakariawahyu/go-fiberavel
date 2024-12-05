@@ -226,3 +226,45 @@ func (c *ConfigController) StoreEvent(ctx *fiber.Ctx) error {
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Event has been updated", "/mimin/config/event")
 }
+
+func (c *ConfigController) StoreRsvp(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	var req request.ConfigRsvpRequest
+	var config_ request.ConfigRequest
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	image, err := helper.GetImage(ctx, "image")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.File = image
+	if err := c.validator.Struct(req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	if req.File != nil {
+		imageName, err := helper.UploadImage(ctx, req.File, req.ImageCaption)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Image = imageName
+	}
+
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	config_.Type = "rsvp"
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "RSVP has been updated", "/mimin/config/rsvp")
+}

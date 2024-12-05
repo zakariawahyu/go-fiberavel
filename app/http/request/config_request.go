@@ -40,3 +40,11 @@ type ConfigEventRequest struct {
 	ImageCaption string                `json:"image_caption" form:"image_caption" validate:"required,max=255"`
 	Date         string                `json:"date" form:"date" validate:"required"`
 }
+
+type ConfigRsvpRequest struct {
+	Title        string                `json:"title" form:"title" validate:"required,max=255"`
+	Description  string                `json:"description" form:"description" validate:"required"`
+	File         *multipart.FileHeader `json:"image" form:"image" validate:"omitempty,required,mime=image/jpg-image/jpeg-image/png"`
+	Image        string                `json:"_"`
+	ImageCaption string                `json:"image_caption" form:"image_caption" validate:"required,max=255"`
+}
