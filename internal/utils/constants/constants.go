@@ -5,7 +5,7 @@ const (
 	KeyCouples   = "couples"
 	KeyVenues    = "venues"
 	KeyGalleries = "galleries"
-	KeyGuestList = "guest_lists"
+	KeyGuests    = "guests"
 	KeyWishes    = "wishes"
 	KeyGift      = "gifts"
 

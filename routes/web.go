@@ -65,6 +65,10 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	usecaseConfig := usecase.NewConfigUsecase(repoConfig, redis)
 	ctrlConfig := admin.NewConfigController(usecaseConfig, cfg.App, session, validator)
 
+	repoGuest := repository.NewGuestRepository(db)
+	usecaseGuest := usecase.NewGuestUsecase(repoGuest, redis)
+	ctrlGuest := admin.NewGuestController(usecaseGuest, cfg.App, session, validator)
+
 	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
@@ -127,6 +131,18 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Update:     DefaultHandler,
 		Edit:       DefaultHandler,
 		Destroy:    ctrlWish.Destroy,
+	})
+
+	registerResources(mimin, "guest", resourceRoutes{
+		Index:      ctrlGuest.Index,
+		Store:      ctrlGuest.Store,
+		Create:     ctrlGuest.Create,
+		Publish:    ctrlGuest.Publish,
+		Datatables: ctrlGuest.Datatables,
+		Show:       ctrlGuest.Show,
+		Update:     ctrlGuest.Update,
+		Edit:       ctrlGuest.Edit,
+		Destroy:    ctrlGuest.Destroy,
 	})
 
 	mimin.Get("/config", ctrlConfig.Index)

@@ -1,0 +1,60 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Guests /</span> Edit
+</h4>
+<div class="dt-action-buttons text-end mb-2">
+    <div class="dt-buttons">
+        <a class="btn btn-info" type="button" href="/mimin/guest"><span><i class="bx bx-arrow-back"></i> <span class="d-none d-sm-inline-block">Back</span></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Form Edit Guest</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/guest/{{ guest.ID }}" method="POST">
+                    <input type="hidden" name="_method" value="PUT">
+                    <div class="mb-3">
+                        <label class="form-label">Name <i class="required">*</i></label>
+                        <input type="text" name="name" class='form-control {{ if isset(errValidate["name"]) }} is-invalid {{ end }}' placeholder="Insert Name" value='{{ if isset(old["name"]) }}{{ old["name"] }}{{else}}{{guest.Name}}{{ end }}'/>
+                        {{ if isset(errValidate["name"]) }}
+                        <div class="invalid-feedback">{{ errValidate["name"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Slug <i class="required">*</i></label>
+                        <input type="text" name="slug" class='form-control {{ if isset(errValidate["slug"]) }} is-invalid {{ end }}' placeholder="Auto generate, if errors please use another name" value='{{ if isset(old["slug"]) }}{{ old["slug"] }}{{else}}{{guest.Slug}}{{ end }}' disabled />
+                        {{ if isset(errValidate["slug"]) }}
+                        <div class="invalid-feedback">{{ errValidate["slug"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Is Gift  </div>
+                        <label class="switch switch-lg">
+                            <input type="checkbox" class='switch-input {{ if isset(errValidate["is_gift"]) }} is-invalid {{ end }}' name="is_gift" onclick="$(this).attr('value', this.checked ? 1 : 0)" value='{{ if isset(old["is_gift"]) }}{{ old["is_gift"] }}{{else}}{{if guest.IsGift == true }}1{{else}}0{{ end }}{{end}}' {{ if isset(old["is_gift"]) }}{{ if old["is_gift"] == true }}checked{{end}}{{else}}{{if guest.IsGift == true }}checked{{end}}{{end}}>
+                            <span class="switch-toggle-slider">
+                                <span class="switch-on">
+                                    <i class="bx bx-check"></i>
+                                </span>
+                                <span class="switch-off">
+                                    <i class="bx bx-x"></i>
+                                </span>
+                            </span>
+                        </label>
+                        {{ if isset(errValidate["is_gift"]) }}
+                        <div class="invalid-feedback">{{ errValidate["is_gift"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

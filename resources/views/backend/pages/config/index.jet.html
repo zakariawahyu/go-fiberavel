@@ -14,9 +14,20 @@
                 <form action="/mimin/config" method="POST">
                     {{ range index, value := configData }}
                     {{ key := value.Type }}
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" name="{{ key }}" value="{{value.IsActive}}" onclick="$(this).attr('value', this.checked ? 1 : 0)">
-                        <label class="form-check-label">{{ configs[key] }}</label>
+                    <div class="mb-3">{{ configs[key] }}
+                        <div class="form-label">
+                            <label class="switch switch-lg">
+                                <input class="switch-input" type="checkbox" name="{{ key }}" value="{{value.IsActive}}" onclick="$(this).attr('value', this.checked ? 1 : 0)">
+                                <span class="switch-toggle-slider">
+                                    <span class="switch-on">
+                                        <i class="bx bx-check"></i>
+                                    </span>
+                                    <span class="switch-off">
+                                        <i class="bx bx-x"></i>
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
                     </div>
                     {{ end }}
                     <div class="mb-3">

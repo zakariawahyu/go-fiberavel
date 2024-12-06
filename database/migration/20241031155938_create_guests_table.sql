@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE guest_lists (
+CREATE TABLE guests (
     id bigserial NOT NULL,
     name varchar(255) NOT NULL,
     slug varchar(255) NOT NULL,
