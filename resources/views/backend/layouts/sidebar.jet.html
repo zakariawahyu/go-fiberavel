@@ -74,29 +74,67 @@
                 <div data-i18n="Couple">Guest List</div>
             </a>
         </li>
+        *}
 
         <!-- Configuration -->
-        <li class="menu-item {{ Route::is('configuration.*') ? 'active open' : '' }}">
+        <li class="menu-item">
             <a href="" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-cog"></i>
                 <div data-i18n="Configuration">Configuration</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ Route::is('configuration.index') ? 'active' : ''}}">
-                    <a href="{{ route('configuration.index') }}" class="menu-link">
-                        <div data-i18n="Wedding Config">Wedding Config</div>
+                <li class="menu-item">
+                    <a href="/mimin/config" class="menu-link">
+                        <div>Wedding Config</div>
                     </a>
                 </li>
-                @foreach (config('custom.configuration') as $key => $value)
-                <li class="menu-item {{ Route::is('configuration.'.$key) ? 'active' : ''}}">
-                    <a href="{{ route('configuration.'.$key) }}" class="menu-link">
-                        <div data-i18n="{{ $value }}">{{ $value }}</div>
+                <li class="menu-item">
+                    <a href="/mimin/config/meta" class="menu-link">
+                        <div>Meta</div>
                     </a>
                 </li>
-                @endforeach
+                <li class="menu-item">
+                    <a href="/mimin/config/cover" class="menu-link">
+                        <div>Cover</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/event" class="menu-link">
+                        <div>Event</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/story" class="menu-link">
+                        <div>Story</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/venue" class="menu-link">
+                        <div>Venue</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/gift" class="menu-link">
+                        <div>Gift</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/rsvp" class="menu-link">
+                        <div>RSVP</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/wish" class="menu-link">
+                        <div>Wish</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/mimin/config/thank" class="menu-link">
+                        <div>Thank</div>
+                    </a>
+                </li>
             </ul>
         </li>
-        *}
 
     <!-- Couple -->
     <li class="menu-item">

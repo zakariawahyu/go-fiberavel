@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gosimple/slug"
 	"github.com/mashingan/smapping"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	"github.com/zakariawahyu/go-fiberavel/app/http/request"
@@ -309,4 +310,118 @@ func (c *ConfigController) StoreStory(ctx *fiber.Ctx) error {
 	}
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Story has been updated", "/mimin/config/story")
+}
+
+func (c *ConfigController) StoreThank(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	var req request.ConfigThankRequest
+	var config_ request.ConfigRequest
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	image, err := helper.GetImage(ctx, "image")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.File = image
+	if err := c.validator.Struct(req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	if req.File != nil {
+		imageName, err := helper.UploadImage(ctx, req.File, req.ImageCaption)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Image = imageName
+	}
+
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	config_.Type = "thank"
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Thank has been updated", "/mimin/config/thank")
+}
+
+func (c *ConfigController) StoreMeta(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	var req request.ConfigMetaRequest
+	var config_ request.ConfigRequest
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	image, err := helper.GetImage(ctx, "image")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	icon, err := helper.GetImage(ctx, "icon")
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	req.FileImage = image
+	req.FileIcon = icon
+	if err := c.validator.Struct(req); err != nil {
+		return flash.HandleValidationError(ctx, c.session.Store, err, req)
+	}
+
+	slug_ := slug.Make(req.Title)
+	if req.FileImage != nil {
+		imageName, err := helper.UploadImage(ctx, req.FileImage, "meta-image-"+slug_)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Image = imageName
+	}
+
+	if req.FileIcon != nil {
+		iconName, err := helper.UploadImage(ctx, req.FileIcon, "meta-icon-"+slug_)
+		if err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, req)
+		}
+
+		req.Icon = iconName
+	}
+
+	if err := smapping.FillStruct(&config_, smapping.MapFields(&req)); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	customData := map[string]any{
+		"custom_data": map[string]string{
+			"author":   req.Author,
+			"keywords": req.Keywords,
+			"icon":     req.Icon,
+		},
+	}
+
+	customDataBytes, err := json.Marshal(customData)
+	if err != nil {
+		return err
+	}
+
+	config_.Type = "meta"
+	config_.CustomData = customDataBytes
+	if err := c.configUsecase.Store(ctxTimeout, config_); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, req)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Meta has been updated", "/mimin/config/meta")
 }

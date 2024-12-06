@@ -1,0 +1,94 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Configuration /</span> Meta
+</h4>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Form Configuration Meta</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/config/meta" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Title<i class="required">*</i></label>
+                        <input type="text" name="title" class='form-control {{ if isset(errValidate["title"]) }} is-invalid {{ end }}' placeholder="Insert Title"  value='{{ if isset(old["title"]) }}{{ old["title"] }}{{else}}{{config.Title}}{{ end }}' />
+                        {{ if isset(errValidate["title"]) }}
+                        <div class="invalid-feedback">{{ errValidate["title"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description <i class="required">*</i></label>
+                        <textarea id="description" name="description" class='form-control {{ if isset(errValidate["description"]) }} is-invalid {{ end }}' placeholder="Insert Description" cols="10" rows="5">{{ if isset(old["description"]) }}{{ old["description"] }}{{else}}{{config.Description}}{{ end }}</textarea>
+                        {{ if isset(errValidate["description"]) }}
+                        <div class="invalid-feedback">{{ errValidate["description"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keywords<i class="required">*</i></label>
+                        <input type="text" name="keywords" class='form-control {{ if isset(errValidate["keywords"]) }} is-invalid {{ end }}' placeholder="Insert Keywords"  value='{{ if isset(old["keywords"]) }}{{ old["keywords"] }}{{else}}{{if isset(config.CustomData) }}{{config.CustomData["keywords"]}}{{end}}{{ end }}' />
+                        {{ if isset(errValidate["keywords"]) }}
+                        <div class="invalid-feedback">{{ errValidate["keywords"] }}</div>
+                        {{ end }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Author<i class="required">*</i></label>
+                        <input type="text" name="author" class='form-control {{ if isset(errValidate["author"]) }} is-invalid {{ end }}' placeholder="Insert Author"  value='{{ if isset(old["author"]) }}{{ old["author"] }}{{else}}{{if isset(config.CustomData) }}{{config.CustomData["author"]}}{{end}}{{ end }}' />
+                        {{ if isset(errValidate["author"]) }}
+                        <div class="invalid-feedback">{{ errValidate["author"] }}</div>
+                        {{ end }}
+                    </div>
+
+                    <div class="mb-3">
+                        <img class="image-output" id="image_output" src='/images/{{if isset(config.Image)}}{{config.Image}}{{end}}' alt="Image Output">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Meta Image<i class="required">*</i></label>
+                        <input type="file" name="image" id="image" class='form-control {{ if isset(errValidate["image"]) }} is-invalid {{ end }}' onchange="loadFile(event, $(this))" accept=".jpg, .jpeg, .png">
+                        {{ if isset(errValidate["image"]) }}
+                        <div class="invalid-feedback">{{ errValidate["image"] }}</div>
+                        {{ end }}
+                    </div>
+
+                    <div class="mb-3">
+                        <img class="image-output" id="icon_output" src='/images/{{if isset(config.CustomData)}}{{config.CustomData["icon"]}}{{end}}' alt="Icon Output">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Meta Icon<i class="required">*</i></label>
+                        <input type="file" name="icon" id="icon" class='form-control {{ if isset(errValidate["icon"]) }} is-invalid {{ end }}' onchange="loadFile(event, $(this))" accept=".jpg, .jpeg, .png">
+                        {{ if isset(errValidate["icon"]) }}
+                        <div class="invalid-feedback">{{ errValidate["icon"] }}</div>
+                        {{ end }}
+                    </div>
+
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+{{ block documentScript() }}
+{{ include "../../partials/tinymce" }}
+<script>
+    var loadFile = function(event, el) {
+        var output = document.getElementById(el.attr('id') + '_output');
+
+        output.src = URL.createObjectURL(event.target.files[0]);
+
+        if (output.classList.contains('hidden')) {
+            output.classList.remove('hidden');
+        }
+
+        output.onload = function() {
+            URL.revokeObjectURL(output.src)
+        }
+    };
+</script>
+{{ end }}
