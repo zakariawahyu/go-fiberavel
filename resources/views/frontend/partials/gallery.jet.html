@@ -10,8 +10,8 @@
                             <ul class="splide__list" id="zoom-gallery-default">
                                 {{ range galleries }}
                                 <li class="splide__slide position-relative">
-                                    <a href="{{ config_app.ImageURL }}{{ .image }}">
-                                        <img data-src="{{ config_app.ImageURL }}{{ .image }}" alt="{{ .image_caption }}" class="img-gallery lazyload" />
+                                    <a href="/images/{{ .image }}">
+                                        <img data-src="/images/{{ .image }}" alt="{{ .image_caption }}" class="img-gallery lazyload" />
                                     </a>
                                 </li>
                                 {{ end }}

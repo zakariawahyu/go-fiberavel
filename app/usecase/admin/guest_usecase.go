@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"encoding/json"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/mashingan/smapping"
 	"github.com/zakariawahyu/go-fiberavel/app/http/request"
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
@@ -116,10 +117,17 @@ func (u *guestUsecase) Publish(ctx context.Context) error {
 		return err
 	}
 
-	guestBytes, err := json.Marshal(guests)
-	if err != nil {
-		return err
+	for _, guest := range guests {
+		log.Infof("Guest: %v", guest)
+		guestBytes, err := json.Marshal(guest)
+		if err != nil {
+			return err
+		}
+
+		if err := u.redis.Hset(constants.KeyGuests, guest.Slug, string(guestBytes)); err != nil {
+			return err
+		}
 	}
 
-	return u.redis.Set(constants.KeyGuests, guestBytes, 0)
+	return nil
 }

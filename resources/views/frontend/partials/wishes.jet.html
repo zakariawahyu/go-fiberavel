@@ -1,4 +1,4 @@
-{{ if wishes != nil && wishes["is_active"] == true }}
+{{ if wish != nil && wish["is_active"] == true }}
 <!-- Start Wishes section -->
 <section class="wishes-section">
     <div class="wishes-form-wrapper color-primary">
@@ -37,10 +37,10 @@
                     <div class="card card-form color__button__trans">
                         <div class="card-body">
                             <div class="title-section" data-anim="zoom-out">
-                                <h2>{{ wishes["title"] }}</h2>
+                                <h2>{{ wish["title"] }}</h2>
                             </div>
                             <div class="position-relative" data-anim="fade-up">
-                                {{ raw(wishes["description"]) }}
+                                {{ raw(wish["description"]) }}
                             </div>
                             <div class="guestbook_form_wrapper">
                                 <form class="text-center color__button__trans" action="/api/wish" method="post" id="guestbook_form">
@@ -109,5 +109,5 @@
         </div>
     </div>
 </section>
-<!-- Start Wishes section -->
+<!-- End Wishes section -->
 {{ end }}

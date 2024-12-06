@@ -1,4 +1,4 @@
-{{ if thanks != nil && thanks["is_active"] == true }}
+{{ if thank != nil && thank["is_active"] == true }}
 <!-- Tanks Section -->
 <section class="thank-section">
     <div class="ornaments-wrapper overflow-hidden">
@@ -96,15 +96,15 @@
                     <div class="thank color-primary">
                         <div class="thank-body">
                             <div class="title-section" data-anim="zoom-out">
-                                <h2>{{ thanks["title"] }}</h2>
+                                <h2>{{ thank["title"] }}</h2>
                             </div>
                             <div class="position-relative" data-anim="fade-up">
-                                {{ raw(thanks["description"]) }}
+                                {{ raw(thank["description"]) }}
                             </div>
                         </div>
                         <div class="image-wrapper" style="aspect-ratio: 4 / 5;">
                             <div class="image-element">
-                                <img data-src='{{ config_app.ImageURL }}{{ thanks["image"] }}' alt='{{ thanks["image_caption"] }}' class="thank-background lazyload" />
+                                <img data-src='/images/{{ thank["image"] }}' alt='{{ thank["image_caption"] }}' class="thank-background lazyload" />
                             </div>
                         </div>
                     </div>

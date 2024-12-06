@@ -3,7 +3,7 @@
 <section class="couple-section color-primary" style="background-color: var(--color-main);color: var(--color-white)">
     <div class="image-wrapper">
         <div class="image-element">
-            <img data-src='{{ config_app.ImageURL }}{{ event["image"] }}' alt='{{ event["image_caption"] }}' class="lazyload" />
+            <img data-src='/images/{{ event["image"] }}' alt='{{ event["image_caption"] }}' class="lazyload" />
         </div>
     </div>
     <div class="couple-wrapper">
@@ -178,7 +178,7 @@
                                     </div>
                                 </div>
                                 <div class="image-element">
-                                    <img data-src="{{ config_app.ImageURL}}{{ .image }}" alt="{{ .image_caption }}" class="couple-image man lazyload"
+                                    <img data-src="/images/{{ .image }}" alt="{{ .image_caption }}" class="couple-image man lazyload"
                                     />
                                 </div>
                                 <div class="ornaments-wrapper overflow-hidden">
