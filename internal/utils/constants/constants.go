@@ -13,6 +13,18 @@ const (
 )
 
 var (
+	Configuration = map[string]string{
+		"meta":  "Meta",
+		"cover": "Cover",
+		"event": "Event",
+		"story": "Story",
+		"venue": "Venue",
+		"gift":  "Gift",
+		"rsvp":  "RSVP",
+		"wish":  "Wish",
+		"thank": "Thank",
+	}
+
 	CoupleTypes = map[string]string{
 		"cpw": "CPW",
 		"cpp": "CPP",

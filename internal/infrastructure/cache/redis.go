@@ -14,6 +14,7 @@ type Storage struct {
 
 type Rueidis interface {
 	Set(key string, val []byte, exp time.Duration) error
+	Hset(key string, field string, val string) error
 	Get(key string) ([]byte, error)
 	HGet(key, field string) (string, error)
 	HGetAll(ctx context.Context, key string) (map[string]string, error)
@@ -45,6 +46,10 @@ func NewRedis(cfg *config.Config) (*Storage, error) {
 
 func (s *Storage) Set(key string, val []byte, exp time.Duration) error {
 	return s.Client.Do(context.Background(), s.Client.B().Set().Key(key).Value(string(val)).Build()).Error()
+}
+
+func (s *Storage) Hset(key string, field string, val string) error {
+	return s.Client.Do(context.Background(), s.Client.B().Hset().Key(key).FieldValue().FieldValue(field, val).Build()).Error()
 }
 
 func (s *Storage) Get(key string) ([]byte, error) {

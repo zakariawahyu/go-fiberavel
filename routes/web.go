@@ -61,6 +61,10 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	usecaseWish := usecase.NewWishUsecase(repoWish, redis)
 	ctrlWish := admin.NewWishController(usecaseWish, cfg.App, session, validator)
 
+	repoConfig := repository.NewConfigRepository(db)
+	usecaseConfig := usecase.NewConfigUsecase(repoConfig, redis)
+	ctrlConfig := admin.NewConfigController(usecaseConfig, cfg.App, session, validator)
+
 	ctrlDashboard := admin.NewDashboardController(session)
 	mimin.Get("/logout", ctrlAuth.Logout)
 	mimin.Get("/dashboard", ctrlDashboard.Index)
@@ -124,6 +128,19 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Edit:       DefaultHandler,
 		Destroy:    ctrlWish.Destroy,
 	})
+
+	mimin.Get("/config", ctrlConfig.Index)
+	mimin.Post("/config", ctrlConfig.Update)
+	mimin.Get("/config/:type", ctrlConfig.Show)
+	mimin.Post("/config/cover", ctrlConfig.StoreCover)
+	mimin.Post("/config/venue", ctrlConfig.StoreVenue)
+	mimin.Post("/config/gift", ctrlConfig.StoreGift)
+	mimin.Post("/config/wish", ctrlConfig.StoreWish)
+	mimin.Post("/config/event", ctrlConfig.StoreEvent)
+	mimin.Post("/config/rsvp", ctrlConfig.StoreRsvp)
+	mimin.Post("/config/story", ctrlConfig.StoreStory)
+	mimin.Post("/config/thank", ctrlConfig.StoreThank)
+	mimin.Post("/config/meta", ctrlConfig.StoreMeta)
 }
 
 func registerResources(group fiber.Router, resources string, handler resourceRoutes) {

@@ -1,0 +1,43 @@
+{{ extends "../../layouts/homepage" }}
+
+{{ block documentBody() }}
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Wedding Configuration</span>
+</h4>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Wedding Configuration</h5>
+            </div>
+            <div class="card-body">
+                <form action="/mimin/config" method="POST">
+                    {{ range index, value := configData }}
+                    {{ key := value.Type }}
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="{{ key }}" value="{{value.IsActive}}" onclick="$(this).attr('value', this.checked ? 1 : 0)">
+                        <label class="form-check-label">{{ configs[key] }}</label>
+                    </div>
+                    {{ end }}
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+{{ block documentScript() }}
+<script>
+    window.onload = function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            if (checkbox.value == "true") {
+                checkbox.checked = true;
+            }
+        });
+    };
+</script>
+{{ end }}

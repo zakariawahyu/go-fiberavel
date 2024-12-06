@@ -11,3 +11,13 @@ func Compact(base fiber.Map, extra interface{}) fiber.Map {
 
 	return base
 }
+
+func InArray(data map[string]string, key string) bool {
+	for k, _ := range data {
+		if k == key {
+			return true
+		}
+	}
+
+	return false
+}
