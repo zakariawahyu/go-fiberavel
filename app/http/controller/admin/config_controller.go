@@ -54,7 +54,7 @@ func (c *ConfigController) Index(ctx *fiber.Ctx) error {
 }
 
 func (c *ConfigController) Update(ctx *fiber.Ctx) error {
-	_, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	ctxTimetout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
 	defer cancel()
 
 	var config_ request.ConfigIsActiveRequest
@@ -66,17 +66,27 @@ func (c *ConfigController) Update(ctx *fiber.Ctx) error {
 
 	trueData := []string{}
 	falseData := []string{}
+	dataRedis := []string{}
 
 	for i := 0; i < values.NumField(); i++ {
+		name := strings.ToLower(types.Field(i).Name)
 		if values.Field(i).Bool() == true {
-			trueData = append(trueData, strings.ToLower(types.Field(i).Name))
+			trueData = append(trueData, name)
 		} else {
-			falseData = append(falseData, strings.ToLower(types.Field(i).Name))
+			falseData = append(falseData, name)
 		}
+		dataRedis = append(dataRedis, name)
 	}
 
-	if err := c.configUsecase.UpdateIsActive(ctx.Context(), trueData, falseData); err != nil {
+	if err := c.configUsecase.UpdateIsActive(ctxTimetout, trueData, falseData); err != nil {
 		return flash.HandleError(ctx, c.session.Store, err, config_)
+	}
+
+	// Update redis
+	for _, value := range dataRedis {
+		if err := c.configUsecase.UpdateRedis(ctxTimetout, value); err != nil {
+			return flash.HandleError(ctx, c.session.Store, err, config_)
+		}
 	}
 
 	return flash.HandleSuccess(ctx, c.session.Store, "Configuration has been updated", "/mimin/config")

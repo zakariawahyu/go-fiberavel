@@ -24,6 +24,7 @@ type ConfigUsecase interface {
 	FindByType(ctx context.Context, type_ string) (sqlc.GetConfigurationByTypeRow, error)
 	UpdateIsActive(ctx context.Context, trueData []string, falseData []string) error
 	Store(ctx context.Context, request request.ConfigRequest) error
+	UpdateRedis(ctx context.Context, type_ string) error
 }
 
 func NewConfigUsecase(configRepo repository.ConfigRepository, redis cache.Rueidis) ConfigUsecase {
@@ -94,8 +95,12 @@ func (u *configUsecase) Store(ctx context.Context, request request.ConfigRequest
 		}
 	}
 
+	return u.UpdateRedis(ctx, request.Type)
+}
+
+func (u *configUsecase) UpdateRedis(ctx context.Context, type_ string) error {
 	// Get configuration data for redis
-	configResult, err := u.configRepo.FindByType(ctx, request.Type)
+	configResult, err := u.configRepo.FindByType(ctx, type_)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return err
 	}
