@@ -20,7 +20,9 @@ type configUsecase struct {
 }
 
 type ConfigUsecase interface {
+	GetAllType(ctx context.Context) ([]sqlc.GetAllTypeConfigurationsRow, error)
 	FindByType(ctx context.Context, type_ string) (sqlc.GetConfigurationByTypeRow, error)
+	UpdateIsActive(ctx context.Context, trueData []string, falseData []string) error
 	Store(ctx context.Context, request request.ConfigRequest) error
 }
 
@@ -31,6 +33,16 @@ func NewConfigUsecase(configRepo repository.ConfigRepository, redis cache.Rueidi
 	}
 }
 
+func (u *configUsecase) GetAllType(ctx context.Context) ([]sqlc.GetAllTypeConfigurationsRow, error) {
+	configurations, err := u.configRepo.GetAllType(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return configurations, nil
+
+}
+
 func (u *configUsecase) FindByType(ctx context.Context, type_ string) (sqlc.GetConfigurationByTypeRow, error) {
 	configuration, err := u.configRepo.FindByType(ctx, type_)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
@@ -38,6 +50,14 @@ func (u *configUsecase) FindByType(ctx context.Context, type_ string) (sqlc.GetC
 	}
 
 	return configuration, nil
+}
+
+func (u *configUsecase) UpdateIsActive(ctx context.Context, trueData []string, falseData []string) error {
+	var bulkUpdate sqlc.BulkUpdateIsActiveConfigurationParams
+	bulkUpdate.Column1 = trueData
+	bulkUpdate.Column2 = falseData
+
+	return u.configRepo.UpdateIsActive(ctx, bulkUpdate)
 }
 
 func (u *configUsecase) Store(ctx context.Context, request request.ConfigRequest) error {

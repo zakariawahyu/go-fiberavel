@@ -4,6 +4,18 @@ import (
 	"mime/multipart"
 )
 
+type ConfigIsActiveRequest struct {
+	Meta  bool `json:"meta" form:"meta"`
+	Cover bool `json:"cover" form:"cover"`
+	Event bool `json:"event" form:"event"`
+	Story bool `json:"story" form:"story"`
+	Venue bool `json:"venue" form:"venue"`
+	Gift  bool `json:"gift" form:"gift"`
+	Rsvp  bool `json:"rsvp" form:"rsvp"`
+	Wish  bool `json:"wish" form:"wish"`
+	Thank bool `json:"thank" form:"thank"`
+}
+
 type ConfigRequest struct {
 	Type         string `json:"type"`
 	Title        string `json:"title"`

@@ -129,7 +129,9 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 		Destroy:    ctrlWish.Destroy,
 	})
 
-	mimin.Get("/config/:type", ctrlConfig.Index)
+	mimin.Get("/config", ctrlConfig.Index)
+	mimin.Post("/config", ctrlConfig.Update)
+	mimin.Get("/config/:type", ctrlConfig.Show)
 	mimin.Post("/config/cover", ctrlConfig.StoreCover)
 	mimin.Post("/config/venue", ctrlConfig.StoreVenue)
 	mimin.Post("/config/gift", ctrlConfig.StoreGift)

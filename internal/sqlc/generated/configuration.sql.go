@@ -9,6 +9,28 @@ import (
 	"context"
 )
 
+const bulkUpdateIsActiveConfiguration = `-- name: BulkUpdateIsActiveConfiguration :exec
+UPDATE configurations
+SET updated_at = NOW(),
+    is_active = CASE
+    WHEN type = ANY($1::text[]) THEN TRUE
+    WHEN type != ANY($2::text[]) THEN FALSE
+    ELSE is_active
+    END
+
+WHERE type = ANY($1::text[]) OR type != ANY($2::text[])
+`
+
+type BulkUpdateIsActiveConfigurationParams struct {
+	Column1 []string `json:"column_1"`
+	Column2 []string `json:"column_2"`
+}
+
+func (q *Queries) BulkUpdateIsActiveConfiguration(ctx context.Context, arg BulkUpdateIsActiveConfigurationParams) error {
+	_, err := q.db.Exec(ctx, bulkUpdateIsActiveConfiguration, arg.Column1, arg.Column2)
+	return err
+}
+
 const createConfiguration = `-- name: CreateConfiguration :exec
 INSERT INTO configurations (
     type, title, description, image, image_caption, custom_data
@@ -36,6 +58,36 @@ func (q *Queries) CreateConfiguration(ctx context.Context, arg CreateConfigurati
 		arg.CustomData,
 	)
 	return err
+}
+
+const getAllTypeConfigurations = `-- name: GetAllTypeConfigurations :many
+SELECT id, type, is_active FROM configurations
+`
+
+type GetAllTypeConfigurationsRow struct {
+	ID       int64  `json:"id"`
+	Type     string `json:"type"`
+	IsActive *bool  `json:"is_active"`
+}
+
+func (q *Queries) GetAllTypeConfigurations(ctx context.Context) ([]GetAllTypeConfigurationsRow, error) {
+	rows, err := q.db.Query(ctx, getAllTypeConfigurations)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllTypeConfigurationsRow
+	for rows.Next() {
+		var i GetAllTypeConfigurationsRow
+		if err := rows.Scan(&i.ID, &i.Type, &i.IsActive); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getConfigurationByType = `-- name: GetConfigurationByType :one

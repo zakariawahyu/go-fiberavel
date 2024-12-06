@@ -15,6 +15,8 @@ import (
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/flash"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
+	"reflect"
+	"strings"
 	"time"
 )
 
@@ -35,6 +37,52 @@ func NewConfigController(configUsecase usecase.ConfigUsecase, cfgApp config.App,
 }
 
 func (c *ConfigController) Index(ctx *fiber.Ctx) error {
+	ctxTimeout, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	configs := constants.Configuration
+	configData, err := c.configUsecase.GetAllType(ctxTimeout)
+	if err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, nil)
+	}
+	build := flash.NewMessage(c.session.Store).Build()
+
+	return ctx.Render("backend/pages/config/index", helper.Compact(fiber.Map{
+		"configs":    configs,
+		"configData": configData,
+	}, build.GetFlash(ctx)))
+}
+
+func (c *ConfigController) Update(ctx *fiber.Ctx) error {
+	_, cancel := context.WithTimeout(ctx.Context(), c.cfgApp.Timeout*time.Second)
+	defer cancel()
+
+	var config_ request.ConfigIsActiveRequest
+	if err := ctx.BodyParser(&config_); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, config_)
+	}
+	values := reflect.ValueOf(config_)
+	types := values.Type()
+
+	trueData := []string{}
+	falseData := []string{}
+
+	for i := 0; i < values.NumField(); i++ {
+		if values.Field(i).Bool() == true {
+			trueData = append(trueData, strings.ToLower(types.Field(i).Name))
+		} else {
+			falseData = append(falseData, strings.ToLower(types.Field(i).Name))
+		}
+	}
+
+	if err := c.configUsecase.UpdateIsActive(ctx.Context(), trueData, falseData); err != nil {
+		return flash.HandleError(ctx, c.session.Store, err, config_)
+	}
+
+	return flash.HandleSuccess(ctx, c.session.Store, "Configuration has been updated", "/mimin/config")
+}
+
+func (c *ConfigController) Show(ctx *fiber.Ctx) error {
 	type_ := ctx.Params("type")
 
 	configs := constants.Configuration
