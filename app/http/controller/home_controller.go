@@ -51,7 +51,7 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	resGuest, err := ctrl.redis.HGet(constants.KeyGuestList, "akbar-gustama")
+	resGuest, err := ctrl.redis.HGet(constants.KeyGuests, "akbar-gustama")
 	if err != nil {
 		return err
 	}

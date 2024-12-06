@@ -63,7 +63,7 @@ type Gift struct {
 	DeletedAt     pgtype.Timestamp `json:"deleted_at"`
 }
 
-type GuestList struct {
+type Guest struct {
 	ID        int64            `json:"id"`
 	Name      string           `json:"name"`
 	Slug      string           `json:"slug"`

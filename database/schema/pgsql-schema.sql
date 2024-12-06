@@ -189,10 +189,10 @@ ALTER SEQUENCE public.gifts_id_seq OWNED BY public.gifts.id;
 
 
 --
--- Name: guest_lists; Type: TABLE; Schema: public; Owner: -
+-- Name: guests; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.guest_lists (
+CREATE TABLE public.guests (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     slug character varying(255) NOT NULL,
@@ -204,10 +204,10 @@ CREATE TABLE public.guest_lists (
 
 
 --
--- Name: guest_lists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: guests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.guest_lists_id_seq
+CREATE SEQUENCE public.guests_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -216,10 +216,10 @@ CREATE SEQUENCE public.guest_lists_id_seq
 
 
 --
--- Name: guest_lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: guests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.guest_lists_id_seq OWNED BY public.guest_lists.id;
+ALTER SEQUENCE public.guests_id_seq OWNED BY public.guests.id;
 
 
 --
@@ -371,10 +371,10 @@ ALTER TABLE ONLY public.gifts ALTER COLUMN id SET DEFAULT nextval('public.gifts_
 
 
 --
--- Name: guest_lists id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: guests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest_lists ALTER COLUMN id SET DEFAULT nextval('public.guest_lists_id_seq'::regclass);
+ALTER TABLE ONLY public.guests ALTER COLUMN id SET DEFAULT nextval('public.guests_id_seq'::regclass);
 
 
 --
@@ -439,18 +439,18 @@ ALTER TABLE ONLY public.gifts
 
 
 --
--- Name: guest_lists guest_lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: guests guest_lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest_lists
+ALTER TABLE ONLY public.guests
     ADD CONSTRAINT guest_lists_pkey PRIMARY KEY (id);
 
 
 --
--- Name: guest_lists guest_lists_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: guests guest_lists_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.guest_lists
+ALTER TABLE ONLY public.guests
     ADD CONSTRAINT guest_lists_slug_unique UNIQUE (slug);
 
 
