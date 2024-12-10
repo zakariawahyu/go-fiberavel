@@ -42,8 +42,7 @@ func ParseDate(date string) (jam string, hari string, tanggal string) {
 }
 
 func ParseUTC(date string) string {
-	loc, _ := time.LoadLocation("Asia/Bangkok")
-	t, _ := time.ParseInLocation(layout, date, loc)
+	t, _ := time.Parse(layout, date)
 
-	return t.UTC().Format("2006/01/02 15:04:05 UTC")
+	return t.Format("2006/01/02 15:04:05 UTC")
 }
