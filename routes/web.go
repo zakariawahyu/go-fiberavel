@@ -7,7 +7,8 @@ import (
 	admin "github.com/zakariawahyu/go-fiberavel/app/http/controller/admin"
 	"github.com/zakariawahyu/go-fiberavel/app/http/middleware"
 	repository "github.com/zakariawahyu/go-fiberavel/app/repository/admin"
-	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
+	usecase "github.com/zakariawahyu/go-fiberavel/app/usecase"
+	usecaseAdmin "github.com/zakariawahyu/go-fiberavel/app/usecase/admin"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	sqlc "github.com/zakariawahyu/go-fiberavel/internal/sqlc/generated"
@@ -26,14 +27,15 @@ type resourceRoutes struct {
 }
 
 func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session, validator *validator.Validate) {
-	ctrlHome := controller.NewHomeController(redis, cfg.App)
+	usecaseHome := usecase.NewHomeUsecase(redis)
+	ctrlHome := controller.NewHomeController(usecaseHome, redis, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
 	app.Get("/to/:guest", ctrlHome.Index)
 
 	// Route Backend
 	repoAuth := repository.NewAuthRepository(db)
-	usecaseAuth := usecase.NewAuthhUsecase(repoAuth)
+	usecaseAuth := usecaseAdmin.NewAuthhUsecase(repoAuth)
 	ctrlAuth := admin.NewAuthController(usecaseAuth, cfg.App, session, validator)
 
 	app.Get("/auth/mimin", ctrlAuth.Index)
@@ -43,31 +45,31 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	mimin := app.Group("/mimin", session.Authenticated())
 
 	repoCouple := repository.NewCoupleRepository(db)
-	usecaseCouple := usecase.NewCoupleUsecase(repoCouple, redis)
+	usecaseCouple := usecaseAdmin.NewCoupleUsecase(repoCouple, redis)
 	ctrlCouple := admin.NewCoupleController(usecaseCouple, cfg.App, session, validator)
 
 	repoVenue := repository.NewVenueRepository(db)
-	usecaseVenue := usecase.NewVenueUsecase(repoVenue, redis)
+	usecaseVenue := usecaseAdmin.NewVenueUsecase(repoVenue, redis)
 	ctrlVenue := admin.NewVenueController(usecaseVenue, cfg.App, session, validator)
 
 	repoGallery := repository.NewGalleryRepository(db)
-	usecaseGallery := usecase.NewGalleryUsecase(repoGallery, redis)
+	usecaseGallery := usecaseAdmin.NewGalleryUsecase(repoGallery, redis)
 	ctrlGallery := admin.NewGalleryController(usecaseGallery, cfg.App, session, validator)
 
 	repoGift := repository.NewGiftRepository(db)
-	usecaseGift := usecase.NewGiftUsecase(repoGift, redis)
+	usecaseGift := usecaseAdmin.NewGiftUsecase(repoGift, redis)
 	ctrlGift := admin.NewGiftController(usecaseGift, cfg.App, session, validator)
 
 	repoWish := repository.NewWishRepository(db)
-	usecaseWish := usecase.NewWishUsecase(repoWish, redis)
+	usecaseWish := usecaseAdmin.NewWishUsecase(repoWish, redis)
 	ctrlWish := admin.NewWishController(usecaseWish, cfg.App, session, validator)
 
 	repoConfig := repository.NewConfigRepository(db)
-	usecaseConfig := usecase.NewConfigUsecase(repoConfig, redis)
+	usecaseConfig := usecaseAdmin.NewConfigUsecase(repoConfig, redis)
 	ctrlConfig := admin.NewConfigController(usecaseConfig, cfg.App, session, validator)
 
 	repoGuest := repository.NewGuestRepository(db)
-	usecaseGuest := usecase.NewGuestUsecase(repoGuest, redis)
+	usecaseGuest := usecaseAdmin.NewGuestUsecase(repoGuest, redis)
 	ctrlGuest := admin.NewGuestController(usecaseGuest, cfg.App, session, validator)
 
 	ctrlDashboard := admin.NewDashboardController(session)
