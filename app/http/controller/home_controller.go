@@ -26,6 +26,8 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 	c, cancel := context.WithTimeout(ctx.Context(), ctrl.cfgApp.Timeout*time.Second)
 	defer cancel()
 
+	guest := ctx.Params("guest")
+
 	configs, err := ctrl.redis.HGetAll(c, constants.KeyConfigs)
 	if err != nil {
 		return err
@@ -51,7 +53,7 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	resGuest, err := ctrl.redis.HGet(constants.KeyGuests, "akbar-gustama")
+	resGuest, err := ctrl.redis.HGet(constants.KeyGuests, guest)
 	if err != nil {
 		return err
 	}
