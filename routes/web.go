@@ -28,7 +28,7 @@ type resourceRoutes struct {
 
 func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cache.Storage, session *middleware.Session, validator *validator.Validate) {
 	usecaseHome := usecase.NewHomeUsecase(redis)
-	ctrlHome := controller.NewHomeController(usecaseHome, redis, cfg.App)
+	ctrlHome := controller.NewHomeController(usecaseHome, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
 	app.Get("/to/:guest", ctrlHome.Index)

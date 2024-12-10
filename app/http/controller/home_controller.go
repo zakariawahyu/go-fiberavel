@@ -5,21 +5,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/zakariawahyu/go-fiberavel/app/usecase"
 	"github.com/zakariawahyu/go-fiberavel/config"
-	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"sync"
 	"time"
 )
 
 type HomeController struct {
 	homeUsecase usecase.HomeUsecase
-	redis       cache.Rueidis
 	cfgApp      config.App
 }
 
-func NewHomeController(homeUsecase usecase.HomeUsecase, redis cache.Rueidis, cfgApp config.App) *HomeController {
+func NewHomeController(homeUsecase usecase.HomeUsecase, cfgApp config.App) *HomeController {
 	return &HomeController{
 		homeUsecase: homeUsecase,
-		redis:       redis,
 		cfgApp:      cfgApp,
 	}
 }
