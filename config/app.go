@@ -23,9 +23,6 @@ type App struct {
 	// Application URL
 	URL string
 
-	// Application Image URL
-	ImageURL string
-
 	// Application Timeout
 	// This value to send timeout in context, time.Second
 	Timeout time.Duration
@@ -38,7 +35,6 @@ func LoadApp() App {
 		Environment: viper.GetString("APP_ENVIRONMENT"),
 		Key:         viper.GetString("APP_KEY"),
 		URL:         viper.GetString("APP_URL"),
-		ImageURL:    viper.GetString("APP_IMAGE_URL"),
 		Timeout:     viper.GetDuration("APP_TIMEOUT"),
 	}
 }

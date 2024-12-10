@@ -29,6 +29,7 @@ func WebRoutes(app *fiber.App, cfg *config.Config, db *sqlc.Queries, redis *cach
 	ctrlHome := controller.NewHomeController(redis, cfg.App)
 
 	app.Get("/", ctrlHome.Index)
+	app.Get("/to/:guest", ctrlHome.Index)
 
 	// Route Backend
 	repoAuth := repository.NewAuthRepository(db)

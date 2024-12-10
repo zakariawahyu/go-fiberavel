@@ -4,27 +4,27 @@
     <div class="ornaments-wrapper overflow-hidden">
         <div class="bg-1">
             <div class="image-element">
-                <img src="assets/frontend/img/joglo.webp" alt="joglo" class="img-fluid" />
+                <img src="/assets/frontend/img/joglo.webp" alt="joglo" class="img-fluid" />
             </div>
         </div>
         <div class="corner-1">
             <div class="image-element" data-anim="fade-right">
-                <img src="assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
+                <img src="/assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
             </div>
         </div>
         <div class="corner-2">
             <div class="image-element" data-anim="fade-right">
-                <img src="assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
+                <img src="/assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
             </div>
         </div>
         <div class="corner-3">
             <div class="image-element" data-anim="fade-right">
-                <img src="assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
+                <img src="/assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
             </div>
         </div>
         <div class="corner-4">
             <div class="image-element" data-anim="fade-right">
-                <img src="assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
+                <img src="/assets/frontend/img/corner.webp" alt="frame-corner" class="img-fluid" />
             </div>
         </div>
     </div>
@@ -40,11 +40,13 @@
                     </div>
                     <div class="col-md-10 m-auto col-11" data-anim="fade-up">
                         <div class="mb-0">
-                            {{ range gifts }}
-                            <p>{{ .bank }}</p>
-                            <p>{{ .account_name }}</p>
-                            <p>{{ .account_number }}</p>
-                            <p><span><button class="btn btn-custom btn-copy-bank-acc rounded-pill color-secondary" type="button" data-clipboard-text="{{ .account_number }}" style="--text-button: #ffffff;"><strong><span style="font-size: 14pt;"> </span></strong>Copy No. Rekening</button></span></p>
+                            {{ if gifts != nil }}
+                                {{ range gifts }}
+                                <p>{{ .bank }}</p>
+                                <p>{{ .account_name }}</p>
+                                <p>{{ .account_number }}</p>
+                                <p><span><button class="btn btn-custom btn-copy-bank-acc rounded-pill color-secondary" type="button" data-clipboard-text="{{ .account_number }}" style="--text-button: #ffffff;"><strong><span style="font-size: 14pt;"> </span></strong>Copy No. Rekening</button></span></p>
+                                {{ end }}
                             {{ end }}
                         </div>
                     </div>

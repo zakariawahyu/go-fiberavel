@@ -48,10 +48,37 @@
     {{ include "layouts/footer" }}
 </div>
 
+{{ if venue_details != nil }}
+    {{ range key := venue_details }}
+        <!-- Start Modal Location-->
+        <div class="modal show-maps" id="event{{ key }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <button type="button" class="btn-modal" data-bs-dismiss="modal" aria-label="Close" style="background-color: antiquewhite;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <div class="modal-actions">
+                            <h2>{{ .name }}</h2>
+                            <span>{{ .location }}</span>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="maps-element">
+                                {{ raw(.map) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal Location-->
+    {{ end }}
+{{ end }}
+
 <div id="google_translate_element"></div>
 
 <audio id="audio_file" class="d-none">
-    <source src="assets/frontend/sound.mp3" type="audio/mpeg" /> Your browser does not support the audio element.
+    <source src="/assets/frontend/sound.mp3" type="audio/mpeg" /> Your browser does not support the audio element.
 </audio>
 <svg style="position: absolute;pointer-events: none;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
     <defs>
