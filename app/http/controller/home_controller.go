@@ -3,11 +3,12 @@ package controller
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/tidwall/gjson"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
-	"github.com/zakariawahyu/go-fiberavel/internal/utils/helper"
+	"sync"
 	"time"
 )
 
@@ -28,81 +29,113 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 	defer cancel()
 
 	guest := ctx.Params("guest")
+	log.Info("Start the proccess")
 
-	configs, err := ctrl.redis.HGetAll(c, constants.KeyConfigs)
-	if err != nil {
-		return err
+	type task struct {
+		key   string
+		value interface{}
+		err   error
 	}
 
-	resCouples, err := ctrl.redis.Get(constants.KeyCouples)
-	if err != nil {
-		return err
+	tasks := []struct {
+		name string
+		work func() (interface{}, error)
+	}{
+		{"configs", func() (interface{}, error) {
+			return ctrl.redis.HGetAll(c, constants.KeyConfigs)
+		}},
+		{"couples", func() (interface{}, error) {
+			return ctrl.redis.Get(constants.KeyCouples)
+		}},
+		{"venue_details", func() (interface{}, error) {
+			return ctrl.redis.Get(constants.KeyVenues)
+		}},
+		{"galleries", func() (interface{}, error) {
+			return ctrl.redis.Get(constants.KeyGalleries)
+		}},
+		{"gifts", func() (interface{}, error) {
+			return ctrl.redis.Get(constants.KeyGift)
+		}},
+		{"guest", func() (interface{}, error) {
+			return ctrl.redis.HGet(constants.KeyGuests, guest)
+		}},
 	}
 
-	resVenueDetails, err := ctrl.redis.Get(constants.KeyVenues)
-	if err != nil {
-		return err
+	// Worker pool setup
+	numWorkers := 3
+	taskChan := make(chan struct {
+		name string
+		work func() (interface{}, error)
+	})
+	resultChan := make(chan task, len(tasks))
+
+	var wg sync.WaitGroup
+
+	// Start workers
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for t := range taskChan {
+				log.Infof("Processing task: %s in workers %v", t.name, i)
+				value, err := t.work()
+				resultChan <- task{key: t.name, value: value, err: err}
+			}
+		}()
 	}
 
-	resGalleries, err := ctrl.redis.Get(constants.KeyGalleries)
-	if err != nil {
-		return err
-	}
-
-	resGifts, err := ctrl.redis.Get(constants.KeyGift)
-	if err != nil {
-		return err
-	}
-
-	resGuest, err := ctrl.redis.HGet(constants.KeyGuests, guest)
-	if err != nil {
-		return err
-	}
-
-	venues := gjson.Parse(string(resVenueDetails)).Array()
-	VenueDetails := make(map[int]interface{})
-
-	for key, value := range venues {
-		jam, hari, tanggal := helper.ParseDate(value.Get("date_held").String())
-		VenueDetails[key] = fiber.Map{
-			"id":       value.Get("id").Int(),
-			"name":     value.Get("name").String(),
-			"location": value.Get("location").String(),
-			"address":  value.Get("address").String(),
-			"map":      value.Get("map").String(),
-			"jam":      jam,
-			"hari":     hari,
-			"tanggal":  tanggal,
+	// Assign tasks
+	go func() {
+		for _, t := range tasks {
+			taskChan <- t
 		}
+		close(taskChan)
+	}()
+
+	// Wait for workers to complete
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	// Collect results
+	results := make(map[string]interface{})
+	for r := range resultChan {
+		if r.err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, r.err.Error())
+		}
+		results[r.key] = r.value
 	}
 
-	event := gjson.Parse(configs["event"]).Map()
-	eventDetail := fiber.Map{
-		"title":         event["title"].String(),
-		"description":   event["description"].String(),
-		"image":         event["image"].String(),
-		"image_caption": event["image_caption"].String(),
-		"custom_data": fiber.Map{
-			"date": helper.ParseUTC(event["custom_data"].Get("date").String()),
-		},
-		"is_active": event["is_active"].Bool(),
+	// Parsing JSON
+	configs, ok := results["configs"].(map[string]string)
+	if !ok || configs == nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to fetch configs")
 	}
 
 	return ctx.Render("frontend/home", fiber.Map{
 		"meta":          gjson.Parse(configs["meta"]).Value(),
 		"cover":         gjson.Parse(configs["cover"]).Value(),
-		"event":         eventDetail,
+		"event":         gjson.Parse(configs["event"]).Value(),
 		"story":         gjson.Parse(configs["story"]).Value(),
 		"venue":         gjson.Parse(configs["venue"]).Value(),
 		"rsvp":          gjson.Parse(configs["rsvp"]).Value(),
 		"gift":          gjson.Parse(configs["gift"]).Value(),
 		"wish":          gjson.Parse(configs["wish"]).Value(),
 		"thank":         gjson.Parse(configs["thank"]).Value(),
-		"couples":       gjson.Parse(string(resCouples)).Value(),
-		"venue_details": VenueDetails,
-		"galleries":     gjson.Parse(string(resGalleries)).Value(),
-		"gifts":         gjson.Parse(string(resGifts)).Value(),
-		"guest":         gjson.Parse(resGuest).Value(),
+		"couples":       ctrl.safeParseString(results["couples"]),
+		"venue_details": ctrl.safeParseString(results["venue_details"]),
+		"galleries":     ctrl.safeParseString(results["galleries"]),
+		"gifts":         ctrl.safeParseString(results["gifts"]),
+		"guest":         ctrl.safeParseString(results["guest"]),
 		"config_app":    ctrl.cfgApp,
 	})
+}
+
+func (ctrl *HomeController) safeParseString(val interface{}) interface{} {
+	str, ok := val.(string)
+	if !ok || str == "" {
+		return nil
+	}
+	return gjson.Parse(str).Value()
 }
