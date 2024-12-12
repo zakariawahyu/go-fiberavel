@@ -35,7 +35,7 @@ func (u *homeUsecase) GetConfigs(ctx context.Context, wg *sync.WaitGroup, config
 		wg.Done()
 	}()
 
-	log.Infof("Start get configs")
+	log.Info("Start get configs")
 
 	configs, err := u.redis.HGetAll(ctx, "configs")
 	if err != nil {
@@ -81,7 +81,7 @@ func (u *homeUsecase) GetData(wg *sync.WaitGroup, dataChan chan map[string]inter
 		wg.Done()
 	}()
 
-	log.Infof("Start get data")
+	log.Info("Start get data")
 
 	resCouples, err := u.redis.Get(constants.KeyCouples)
 	if err != nil {
@@ -147,7 +147,7 @@ func (u *homeUsecase) Hget(guest string, wg *sync.WaitGroup, dataChan chan map[s
 		wg.Done()
 	}()
 
-	log.Infof("Start hget")
+	log.Info("Start hget")
 
 	res, err := u.redis.HGet(constants.KeyGuests, guest)
 	if err != nil {
