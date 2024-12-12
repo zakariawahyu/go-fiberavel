@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/tidwall/gjson"
 	"github.com/zakariawahyu/go-fiberavel/internal/infrastructure/cache"
 	"github.com/zakariawahyu/go-fiberavel/internal/utils/constants"
@@ -33,6 +34,8 @@ func (u *homeUsecase) GetConfigs(ctx context.Context, wg *sync.WaitGroup, config
 		close(errChan)
 		wg.Done()
 	}()
+
+	log.Infof("Start get configs")
 
 	configs, err := u.redis.HGetAll(ctx, "configs")
 	if err != nil {
@@ -77,6 +80,8 @@ func (u *homeUsecase) GetData(wg *sync.WaitGroup, dataChan chan map[string]inter
 		close(errChan)
 		wg.Done()
 	}()
+
+	log.Infof("Start get data")
 
 	resCouples, err := u.redis.Get(constants.KeyCouples)
 	if err != nil {
@@ -141,6 +146,8 @@ func (u *homeUsecase) Hget(guest string, wg *sync.WaitGroup, dataChan chan map[s
 		close(errChan)
 		wg.Done()
 	}()
+
+	log.Infof("Start hget")
 
 	res, err := u.redis.HGet(constants.KeyGuests, guest)
 	if err != nil {

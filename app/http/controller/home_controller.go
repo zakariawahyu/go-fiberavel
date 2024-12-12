@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/zakariawahyu/go-fiberavel/app/usecase"
 	"github.com/zakariawahyu/go-fiberavel/config"
 	"sync"
@@ -26,6 +27,8 @@ func (ctrl *HomeController) Index(ctx *fiber.Ctx) error {
 	defer cancel()
 
 	guest := ctx.Params("guest")
+
+	log.Info("Start the process")
 
 	// Go routine to get all configs
 	wg := new(sync.WaitGroup)
